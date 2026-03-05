@@ -1,0 +1,117 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "travel_advisory",
+  "title": "TravelAdvisory",
+  "description": "Country-level travel risk assessment produced by the LLM orchestrator",
+  "type": "object",
+  "required": [
+    "country_name",
+    "country_code",
+    "risk_level",
+    "risk_label",
+    "event_types",
+    "advisory_summary",
+    "regional_warnings",
+    "entry_exit_requirements",
+    "news_headlines",
+    "run_id",
+    "timestamp"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "country_name": {
+      "type": "string",
+      "description": "Canonical country name from ISO 3166-1"
+    },
+    "country_code": {
+      "type": "string",
+      "description": "ISO 3166-1 alpha-3 country code",
+      "pattern": "^[A-Z]{3}$"
+    },
+    "risk_level": {
+      "type": "integer",
+      "description": "State Department advisory level",
+      "minimum": 1,
+      "maximum": 4
+    },
+    "risk_label": {
+      "type": "string",
+      "description": "Human-readable label for the risk level",
+      "enum": [
+        "Exercise Normal Precautions",
+        "Exercise Increased Caution",
+        "Reconsider Travel",
+        "Do Not Travel"
+      ]
+    },
+    "event_types": {
+      "type": "array",
+      "description": "Risk categories identified in the advisory and news articles",
+      "items": {
+        "type": "string",
+        "enum": [
+          "crime",
+          "terrorism",
+          "civil_unrest",
+          "health",
+          "natural_disaster",
+          "kidnapping",
+          "conflict",
+          "other"
+        ]
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "advisory_summary": {
+      "type": "string",
+      "description": "2-4 sentence synthesis of the State Department advisory",
+      "minLength": 20
+    },
+    "regional_warnings": {
+      "type": "array",
+      "description": "Specific regions or areas with elevated risk mentioned in the advisory",
+      "items": {
+        "type": "string"
+      }
+    },
+    "entry_exit_requirements": {
+      "type": "string",
+      "description": "Summary of visa, passport, and entry/exit requirements"
+    },
+    "news_headlines": {
+      "type": "array",
+      "description": "Titles of the news articles used as input",
+      "items": {
+        "type": "string"
+      }
+    },
+    "citations": {
+      "type": "array",
+      "description": "Source URLs and titles used to produce this record",
+      "items": {
+        "type": "object",
+        "required": ["url", "title"],
+        "properties": {
+          "url": {
+            "type": "string",
+            "format": "uri"
+          },
+          "title": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "run_id": {
+      "type": "string",
+      "description": "Unique identifier for the pipeline run that produced this record"
+    },
+    "timestamp": {
+      "type": "string",
+      "description": "ISO 8601 UTC timestamp when this record was generated",
+      "format": "date-time"
+    }
+  }
+}

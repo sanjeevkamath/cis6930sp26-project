@@ -1,0 +1,35 @@
+[
+  {"country_name": "Australia",                                  "country_code": "AUS"},
+  {"country_name": "Canada",                                     "country_code": "CAN"},
+  {"country_name": "France",                                     "country_code": "FRA"},
+  {"country_name": "Germany",                                    "country_code": "DEU"},
+  {"country_name": "Japan",                                      "country_code": "JPN"},
+  {"country_name": "New Zealand",                                "country_code": "NZL"},
+  {"country_name": "Switzerland",                                "country_code": "CHE"},
+  {"country_name": "Norway",                                     "country_code": "NOR"},
+
+  {"country_name": "Brazil",                                     "country_code": "BRA"},
+  {"country_name": "Mainland China, Hong Kong & Macau - See Summaries", "country_code": "CHN"},
+  {"country_name": "India",                                      "country_code": "IND"},
+  {"country_name": "Indonesia",                                  "country_code": "IDN"},
+  {"country_name": "Kenya",                                      "country_code": "KEN"},
+  {"country_name": "Mexico Travel Advisory",                     "country_code": "MEX"},
+  {"country_name": "Nepal",                                      "country_code": "NPL"},
+  {"country_name": "South Africa",                               "country_code": "ZAF"},
+  {"country_name": "Thailand",                                   "country_code": "THA"},
+  {"country_name": "Turkey",                                     "country_code": "TUR"},
+
+  {"country_name": "Colombia",                                   "country_code": "COL"},
+  {"country_name": "Egypt",                                      "country_code": "EGY"},
+  {"country_name": "Ethiopia",                                   "country_code": "ETH"},
+  {"country_name": "Pakistan",                                   "country_code": "PAK"},
+  {"country_name": "Nigeria",                                    "country_code": "NGA"},
+  {"country_name": "Papua New Guinea",                           "country_code": "PNG"},
+
+  {"country_name": "Afghanistan",                                "country_code": "AFG"},
+  {"country_name": "North Korea",                                "country_code": "PRK"},
+  {"country_name": "Russia",                                     "country_code": "RUS"},
+  {"country_name": "Syria",                                      "country_code": "SYR"},
+  {"country_name": "Yemen",                                      "country_code": "YEM"},
+  {"country_name": "Burma (Myanmar)",                            "country_code": "MMR"}
+]
