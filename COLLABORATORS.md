@@ -1,0 +1,1 @@
+Claude code was used in the development of this software to assist me in deep planning, ensuring my system design was sound, debugging, writing comprehensive tests, and in adding comprehensive comments to ensure code is understandable to reviewers.
