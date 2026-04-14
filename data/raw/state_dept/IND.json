@@ -1,0 +1,17 @@
+{
+  "country_name": "India",
+  "country_code": "IND",
+  "risk_level": 2,
+  "risk_label": "Exercise Increased Caution",
+  "advisory_summary": "Exercise increased caution in India due to crime and terrorism . Some areas have increased risk. Violent crime and terrorism occur in India. Rape is one of the fastest growing crimes in India. Violent crimes, including sexual assault, happen at tourist sites and other locations. Terrorists may attack with little or no warning. They target: Tourist locations Transportation hubs Markets and shopping malls Government facilities The U.S. government has limited ability to provide emergency services to U.S. citizens in rural areas. These areas stretch from eastern Maharashtra and northern Telangana through western West Bengal. Due to the risks, U.S. government employees working in India must obtain special authorization to travel to these areas.",
+  "regional_warnings": [],
+  "entry_exit_requirements": "",
+  "event_types": [
+    "terrorism",
+    "conflict",
+    "crime"
+  ],
+  "advisory_url": "https://travel.state.gov/content/tsg_aem/us/en/home/international-travel/travel-advisories/destination.ind.html",
+  "pub_date": "Mon, 16 Jun 2025",
+  "fetched_at": "2026-03-04T23:14:39.740517+00:00"
+}

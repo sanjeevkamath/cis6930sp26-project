@@ -1,0 +1,19 @@
+{
+  "country_name": "Colombia",
+  "country_code": "COL",
+  "risk_level": 3,
+  "risk_label": "Reconsider Travel",
+  "advisory_summary": "Reconsider travel to Colombia due to\u00c2 crime, terrorism, civil unrest,\u00e2\u0080\u00af and\u00e2\u0080\u00af kidnapping . Some areas have an increased risk. Read the entire Travel Advisory. Violent crime is common in many areas in Colombia. This includes murder, assault, and robbery. In some places, organized crime is rampant. This includes extortion, robbery, and kidnapping. There is risk of terrorist violence, including terrorist attacks and other activity, in Colombia.\u00c2\u00a0 Visit the U.S. Department of State's country reports on terrorism to learn more.\u00c2 Terrorists and criminal organizations in Colombia may attack with little or no warning and target:\u00c2 U.S. government facilities\u00c2\u00a0\u00c2 Local government facilities\u00c2 Tourist areas and attractions Transportation centers\u00c2 Shopping malls and markets\u00c2 Military and police facilities\u00c2 Hotels\u00c2\u00a0\u00c2 Clubs\u00c2\u00a0\u00c2 Restaurants\u00c2 Airports\u00c2 Political demonstrations are common throughout Colombia and can:\u00c2 Shut down roads and highways without notice or estimated reopening timelines.\u00c2 Lead to road closures that reduce access to public transportation.\u00c2 Interrupt travel within and between cities.\u00c2\u00a0\u00c2 Become violent and result in deaths and injuries.\u00c2 Due to the risks, U.S. government employees working in Colombia are prohibited from:\u00c2 Going to Colombia\u00e2\u0080\u0099s land borders with neighboring countries without special authorization.\u00c2 Using motorcycles.\u00c2 Using street taxis or any public transportation that is not prearranged.\u00c2 Do Not Travel to: Arauca, Cauca (excluding Popay\u00c3\u00a1n), and Norte de Santander departments due to\u00c2 crime\u00e2\u0080\u00af and\u00e2\u0080\u00af terrorism . The Colombia-Venezuela border region due to crime, kidnapping, conflict between armed groups , and the risk of detention .",
+  "regional_warnings": [],
+  "entry_exit_requirements": "",
+  "event_types": [
+    "kidnapping",
+    "terrorism",
+    "civil_unrest",
+    "conflict",
+    "crime"
+  ],
+  "advisory_url": "https://travel.state.gov/content/tsg_aem/us/en/home/international-travel/travel-advisories/destination.col.html",
+  "pub_date": "Thu, 17 Apr 2025",
+  "fetched_at": "2026-03-04T23:14:39.743160+00:00"
+}

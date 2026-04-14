@@ -1,0 +1,16 @@
+{
+  "country_name": "Germany",
+  "country_code": "DEU",
+  "risk_level": 2,
+  "risk_label": "Exercise Increased Caution",
+  "advisory_summary": "Exercise increased caution in Germany due to terrorism . Terrorist groups and lone actors remain a constant threat in Germany and Europe, attacking people in public locations with knives, small arms, rudimentary explosive devices, and vehicles.\u00c2\u00a0 Such attacks may occur with little or no warning and target:\u00e2\u0080\u00af\u00e2\u0080\u00af Tourist locations\u00e2\u0080\u00af Transportation centers (airports, train, or bus stations)\u00e2\u0080\u00af\u00e2\u0080\u00af Markets and shopping malls\u00e2\u0080\u00af Local government facilities\u00e2\u0080\u00af Hotels, clubs, and restaurants\u00e2\u0080\u00af Places of worship and educational institutions\u00e2\u0080\u00af Parks\u00e2\u0080\u00af Major sporting and cultural events\u00e2\u0080\u00af Schools",
+  "regional_warnings": [],
+  "entry_exit_requirements": "",
+  "event_types": [
+    "terrorism",
+    "conflict"
+  ],
+  "advisory_url": "https://travel.state.gov/content/tsg_aem/us/en/home/international-travel/travel-advisories/destination.deu.html",
+  "pub_date": "Tue, 13 May 2025",
+  "fetched_at": "2026-03-04T23:14:39.738786+00:00"
+}

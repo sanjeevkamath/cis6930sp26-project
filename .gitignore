@@ -4,5 +4,13 @@ __pycache__/
 *.pyc
 *.pyo
 .DS_Store
-data/raw/
 data/*.db
+data/snapshots/
+
+# Internal notes — not for the repo
+context-DONOTPUSH/
+designcontext.txt
+final-paper-requirements.txt
+code-checkpoint.md
+preliminary_results.md
+main.py

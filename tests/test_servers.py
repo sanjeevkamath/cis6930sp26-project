@@ -517,13 +517,13 @@ class TestBootstrapCI:
 
 
 class TestRowTokens:
-    def test_contains_risk_level_token(self):
+    def test_excludes_risk_level_token(self):
         tokens = _row_tokens(VALID_RECORD)
-        assert "risk_level:2" in tokens
+        assert "risk_level:2" not in tokens
 
-    def test_contains_risk_label_token(self):
+    def test_excludes_risk_label_token(self):
         tokens = _row_tokens(VALID_RECORD)
-        assert "risk_label:Exercise Increased Caution" in tokens
+        assert "risk_label:Exercise Increased Caution" not in tokens
 
     def test_contains_event_type_tokens(self):
         tokens = _row_tokens(VALID_RECORD)

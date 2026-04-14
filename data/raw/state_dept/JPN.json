@@ -1,0 +1,15 @@
+{
+  "country_name": "Japan",
+  "country_code": "JPN",
+  "risk_level": 1,
+  "risk_label": "Exercise Normal Precautions",
+  "advisory_summary": "Exercise normal precaution in Japan. U.S. citizens should always exercise caution when traveling abroad. Use these general tips to stay safe.",
+  "regional_warnings": [],
+  "entry_exit_requirements": "",
+  "event_types": [
+    "other"
+  ],
+  "advisory_url": "https://travel.state.gov/content/tsg_aem/us/en/home/international-travel/travel-advisories/destination.jpn.html",
+  "pub_date": "Thu, 15 May 2025",
+  "fetched_at": "2026-03-04T23:14:39.738965+00:00"
+}

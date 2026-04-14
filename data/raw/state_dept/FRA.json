@@ -1,0 +1,18 @@
+{
+  "country_name": "France",
+  "country_code": "FRA",
+  "risk_level": 2,
+  "risk_label": "Exercise Increased Caution",
+  "advisory_summary": "Exercise increased caution in France due to\u00e2\u0080\u00af terrorism \u00e2\u0080\u00afand\u00e2\u0080\u00af unrest . Pickpocketing and phone thefts are common, especially in crowded places. Terrorist groups continue to plan possible attacks in France and may attack with little to no warning. There are also regular, peaceful protests and strikes in Paris and other cities throughout France.\u00c2 Pickpocketing and phone thefts are frequent crimes. They can occur in crowded areas such as:\u00c2 Airports\u00c2 Subways and train cars\u00c2 Tourist attractions\u00c2 Train stations\u00c2 Terrorist groups continue to plan possible attacks in France. They may attack with little or no warning.\u00c2\u00a0Possible targets include:\u00c2 Tourist locations\u00c2 Transportation hubs and airports\u00c2 Markets and shopping malls\u00c2 Local government facilities\u00c2 Hotels, restaurants, and clubs\u00c2 Places of worship\u00c2 Major sporting and cultural events\u00c2 Educational institutions\u00c2 Parks\u00c2 Other public areas\u00c2 Peaceful demonstrations and strikes happen often in Paris and other cities in France.\u00c2 Protests can disrupt transportation services.\u00c2 On rare occasions, protests have turned violent or caused property damage.\u00c2 Police may respond with water cannons and tear gas.\u00c2",
+  "regional_warnings": [],
+  "entry_exit_requirements": "",
+  "event_types": [
+    "terrorism",
+    "civil_unrest",
+    "conflict",
+    "crime"
+  ],
+  "advisory_url": "https://travel.state.gov/content/tsg_aem/us/en/home/international-travel/travel-advisories/destination.fra.html",
+  "pub_date": "Wed, 28 May 2025",
+  "fetched_at": "2026-03-04T23:14:39.738548+00:00"
+}

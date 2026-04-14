@@ -1,0 +1,122 @@
+CIS6930 - Project Proposal
+Sanjeev Kamath, Spring 2026
+
+Research Question
+Research Question: Does schema-constrained validation with retry loops reduce the output volatility of a GPT-4-orchestrated multi-source integration pipeline by at least 50% compared to unconstrained generation, measured by row-level Jaccard similarity across repeated runs on U.S. travel advisory data for 30 countries?
+Relevance to Data Engineering: If simple guardrails can demonstrably stabilize LLM outputs, it opens a practical path for adopting LLM-orchestrated pipelines in production, not as a replacement for deterministic logic, but as a governed complement to it.
+Project Direction
+Direction: C - Novel Architecture with Stability Focus
+This project proposes and evaluates a novel pipeline architecture that wraps an LLM orchestrator in layered stability constraints (schema validation, retry loops, entity normalization) and measures how those constraints affect output volatility under repeated execution and input perturbation.
+The pipeline integrates three sources to produce structured, country-level travel risk assessments:
+U.S. State Department Travel Advisories provide official risk levels (1–4), regional warnings, and entry/exit requirements for 30 countries. These semi-structured documents offer consistent formatting and verifiable ground truth.
+NewsAPI Articles supply five recent English-language news articles per country, introducing realistic input noise that naturally stress-tests stability.
+ISO 3166 Country Metadata serves as the normalization reference, resolving variant country names to a single canonical entity.
+The 30-country scope keeps experimental runs affordable while spanning all four State Department risk tiers. Articles are fetched once and cached locally to ensure reproducibility regardless of API availability.
+
+3. Initial Design
+Architecture Diagram
+Pipeline Overview
+
+Data Sources
+
+State Department API — provides official travel advisory data.
+
+NewsAPI — provides recent news articles related to countries and safety events.
+
+ISO Country List — provides standardized country names and codes used for normalization.
+
+Extraction Layer (MCP Servers)
+
+StateDeptExtract MCP Server
+Retrieves travel advisory information from the State Department API.
+
+NewsExtract MCP Server
+Fetches recent news articles for countries from NewsAPI.
+
+EntityNormalization MCP Server
+Uses the ISO country list to standardize country names and identifiers across all data sources.
+
+LLM Orchestration Layer
+
+LLM Orchestrator
+Coordinates the pipeline and integrates outputs from the extract servers.
+It generates structured JSON using schema-constrained generation, ensuring the output follows a predefined schema.
+A validation gate and retry loop are applied to correct malformed outputs before moving forward.
+
+Validation Layer
+
+SchemaValidation MCP Server
+Checks the LLM-generated JSON against the schema.
+If validation fails, the system rejects the output and retries up to three times.
+
+Load Layer
+
+Load MCP Server
+Inserts validated rows into the database and creates a snapshot version of the dataset for reproducibility.
+
+Analysis Layer
+
+StabilityAnalysis MCP Server
+Compares different dataset snapshots and computes metrics that measure pipeline stability and output variability across runs.
+
+Summary Flow
+
+Data sources → extraction MCP servers → LLM orchestrator (schema-constrained generation) → schema validation with retries → database load with snapshotting → stability analysis comparing snapshots.
+
+MCP Servers
+Five MCP servers divide the pipeline into clearly separated responsibilities:
+StateDeptExtractServer fetches and segments advisory text into structured sections (overall risk level, regional warnings, entry/exit requirements). Fully deterministic with no LLM involvement.
+NewsExtractServer retrieves the top five articles per country from NewsAPI with metadata. Also deterministic for a given query window.
+SchemaValidationServer is the core constraint under study. It validates every LLM-generated JSON row against a strict schema: required fields must be present, hallucinated fields are rejected, and value constraints are enforced (e.g., risk_level must be 1–4, event_types must come from a fixed taxonomy). On failure, structured error feedback is returned and the orchestrator re-prompts the LLM, up to three retries before flagging the row as failed.
+LoadServer inserts validated rows into a SQLite database and creates versioned snapshots tagged with run ID and timestamp for cross-run comparison.
+StabilityAnalysisServer compares snapshots across runs, computes row-level diffs, and calculates the stability metrics described in the evaluation plan.
+What the LLM Orchestrates
+The LLM (GPT-4) sits at the center of the pipeline, receiving structured extractions from the deterministic servers and synthesizing them into unified, country-level risk assessments. The architectural constraints (schema validation, retry loops, entity normalization) govern its outputs without replacing its role as the integration engine.
+4. Evaluation Plan
+Metrics
+Evaluation covers stability (primary), accuracy (secondary), and cost.
+Reproducibility Rate. Three identical runs; row-level Jaccard similarity computed field-by-field. Aggregate metric: percentage of countries producing identical rows across all runs.
+Schema Compliance Rate. First-attempt pass rate, average retries before acceptance, and field-level consistency across runs.
+Entity Stability Under Perturbation. One news article per country added or removed to simulate time-shifted re-runs. Tracks risk_level changes and row-splitting behavior.
+Sensitivity Score. Risk score variance across five perturbed runs. Summary stability measured via cosine similarity of sentence embeddings (all-MiniLM-L6-v2), with 0.90 as the semantic stability threshold.
+Accuracy. Precision and recall for risk_level, event_types, and citation validity on a 10-country ground truth subset.
+Cost. Token usage, API calls, runtime, and estimated dollar cost per run, reported per-country and pipeline-wide.
+Baselines
+Deterministic ETL. Hand-coded regex parsing, keyword classification, fuzzy matching, and template summaries. Fully deterministic; represents the stability ceiling.
+Single-Shot LLM (Stretch Goal). One prompt, no validation or retries. Isolates the effect of architectural constraints. Deprioritized if time is tight.
+Ground Truth
+Ten countries spanning all four risk tiers. Two annotators independently label risk_level, event_types, and citations. Agreement measured with Cohen's kappa; disagreements resolved by discussion.
+
+5. Timeline
+
+
+Week
+Dates
+Milestone
+Tasks
+1
+Feb 23
+Proposal
+Finalize schema and risk taxonomy. Define perturbation strategy. Submit research question and initial design.
+2
+Mar 2
+Design Review
+Collect/cache advisories and articles for 30 countries. Finalize detailed architecture and evaluation plan.
+3–4
+Mar 3–23
+Code Checkpoint
+Build all MCP servers (StateDeptExtract, NewsExtract, SchemaValidation, Load, StabilityAnalysis). Implement LLM orchestrator with retry loop. Set up SQLite with snapshot versioning. Implement deterministic ETL baseline. Run first end-to-end integration and initial reproducibility experiments.
+5
+Mar 24–30
+Draft Paper
+Run perturbation experiments (5 perturbed runs per country). Annotate 10-country ground truth. Compute stability, accuracy, and cost metrics. Write complete draft.
+6–7
+Mar 31–Apr 13
+Final Paper
+Full comparative analysis (constrained LLM vs. deterministic ETL). Run single-shot LLM baseline if time permits. Polish paper with final evaluation and architecture diagrams.
+8
+Week of Apr 20
+Presentation
+Prepare and deliver 10-minute presentation + Q&A.
+
+

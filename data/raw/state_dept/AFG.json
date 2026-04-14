@@ -1,0 +1,20 @@
+{
+  "country_name": "Afghanistan",
+  "country_code": "AFG",
+  "risk_level": 4,
+  "risk_label": "Do Not Travel",
+  "advisory_summary": "There was no change to the advisory level. Do not travel to Afghanistan due to civil unrest, crime, terrorism, risk of wrongful detention, kidnapping, natural disasters, and limited health facilities. Do not travel to Afghanistan for any reason We urge American citizens in Afghanistan to leave immediately. U.S. citizens seeking U.S. government help to leave the country should email their complete biographic details, contact information (email and phone number), and U.S. passport number to AfghanistanACS@state.gov . The U.S. Embassy in Kabul suspended operations in 2021. The U.S. government cannot provide routine or emergency consular services to U.S. citizens in Afghanistan. The Taliban actively surveil and monitor travelers. U.S.-Afghan dual nationals and U.S. citizens linked to NGOs face higher risks of surveillance.\u00a0 The Taliban\u2019s so-called General Directorate of Intelligence (GDI) and the Ministry for the Promotion of Virtue and Prevention of Vice and Complaints (PVPV) are responsible for enforcing directives and edicts issued by Taliban authorities. Multiple terrorist groups are active in Afghanistan. U.S. citizens are targets of kidnapping and hostage-taking, and may become targets for violence. There is a high risk of wrongful detention of U.S. nationals in Afghanistan. All American citizens, including tourists and U.S.-Afghan dual nationals, are targeted for detention. Lawful Permanent Residents who previously supported the United States in Afghanistan may also be targeted. For example, anyone who worked as an interpreter could be targeted. The Taliban have harassed and detained aid, faith-based organization, and humanitarian workers. Foreigners are often viewed with suspicion. Reasons for detention may be unclear or arbitrary. Even if you are registered with the appropriate authorities to conduct business, the risk of detention is high. Detention conditions are severe. The Taliban do not permit the United States to conduct welfare checks on U.S. citizens in detention, including by phone. Detention can be long. Even if a case is determined to be a wrongful detention, there is no guarantee of release. While in detention, American citizens have limited or no access to medical attention. They may face physical abuse. Natural disaster Afghanistan is a seismically active region, with frequent and devastating earthquakes. Earthquakes have caused mass casualties and critical damage to homes and infrastructure. In September 2025, a 6.0 magnitude earthquake struck the eastern region of Afghanistan, killing over 1,100 people. Aviation Safety Oversight The U.S. Federal Aviation Administration (FAA) has not assessed Afghanistan's Civil Aviation Authority for compliance with international standards for aviation safety oversight. FAA\u2019s website includes more information on its assessment program. The FAA has issued a Notice to Airmen ( NOTAM) and a Special Federal Aviation Regulation ( SFAR ) due to risks to civil aviation operating within or in the vic",
+  "regional_warnings": [],
+  "entry_exit_requirements": "",
+  "event_types": [
+    "kidnapping",
+    "terrorism",
+    "civil_unrest",
+    "crime",
+    "health",
+    "natural_disaster"
+  ],
+  "advisory_url": "https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories/afghanistan-advisory.html",
+  "pub_date": "Fri, 20 Feb 2026",
+  "fetched_at": "2026-03-04T23:14:39.744665+00:00"
+}

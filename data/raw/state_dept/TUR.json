@@ -1,0 +1,18 @@
+{
+  "country_name": "Turkey",
+  "country_code": "TUR",
+  "risk_level": 2,
+  "risk_label": "Exercise Increased Caution",
+  "advisory_summary": "Reissued after periodic reviews with minor edits. Exercise increased caution when traveling to T\u00fcrkiye due to terrorism and arbitrary detentions. Some areas have increased risk. Read the entire Travel Advisory. Do Not Travel To: Sirnak province, Hakkari province, and any area within six miles (10 kilometers) of the Syrian border due to\u202fterrorism. Country Summary: Terrorist groups continue plotting possible attacks in T\u00fcrkiye. Terrorists may attack with little or no warning, targeting tourist locations. Be cautious in transportation hubs, markets, malls, and government buildings, as well as hotels, clubs, restaurants, places of worship, and parks. Be careful in airports and at major events. Security forces have detained tens of thousands of people, including U.S. citizens, for alleged ties to terrorist groups based on scant or secret evidence and grounds that appear to be politically motivated.\u00a0 U.S. citizens have also been subject to exit bans that prevent them from departing T\u00fcrkiye. Protests not approved by the Turkish government can lead to arrest, as can criticizing the government, including on social media. Read the country information page for additional information on travel to\u00a0T\u00fcrkiye. If you decide to travel to T\u00fcrkiye: Stay alert in locations frequented by tourists. Avoid demonstrations and crowds. Stay at hotels with identifiable security measures. Monitor local media and be prepared to adjust your plans quickly. Enroll in the Smart Traveler Enrollment Program ( STEP ) to receive travel alerts and make it easier to locate you in an emergency. Follow the Department of State on Facebook and X/Twitter . Review the Country Security Report for T\u00fcrkiye. Visit the CDC page for the latest Travel Health Information related to your travel. Prepare a contingency plan for emergency situations. Review the Traveler\u2019s Checklist . Sirnak Province, Hakkari Province, and Any Area\u202fwithin six miles (ten kilometers) of\u202fthe Syrian Border \u2013 Level 4:\u00a0 Do Not Travel Do not travel to Sirnak province, Hakkari province, or any area within six miles (10 kilometers) of the Turkey/Syria border due to the continued threat of attacks by terrorist groups, armed conflict, and civil unrest.\u202f\u202fTerrorist attacks, including suicide bombings, ambushes, car bombs, and\u00a0 explosive devices, as well as shootings and illegal roadblocks leading to violence have occurred in these areas.\u00a0U.S. government employees are subject to travel restrictions in the entire provinces of Sirnak and Hakkari, and any areas within 10 km of the Syrian border. Visit our website for Travel to High-Risk Areas .",
+  "regional_warnings": [],
+  "entry_exit_requirements": "",
+  "event_types": [
+    "terrorism",
+    "civil_unrest",
+    "conflict",
+    "health"
+  ],
+  "advisory_url": "https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories/turkey-travel-advisory.html",
+  "pub_date": "Wed, 16 Oct 2024",
+  "fetched_at": "2026-03-04T23:14:39.742920+00:00"
+}

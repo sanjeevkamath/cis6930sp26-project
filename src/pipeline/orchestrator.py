@@ -16,9 +16,7 @@ SYSTEM_PROMPT
     unconstrained conditions is whether the retry loop is applied.
 
 Temperature
-    1.0 (OpenAI default). Intentional: the experiment measures natural LLM
-    variance. temperature=0 would trivially stabilize outputs and defeat the
-    study's purpose.
+    1.0 (OpenAI default)
 
 Model / API
     gpt-oss-120b via UF HiPerGator (OPENAI_BASE_URL env var).

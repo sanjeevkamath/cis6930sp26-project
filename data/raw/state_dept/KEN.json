@@ -1,0 +1,20 @@
+{
+  "country_name": "Kenya",
+  "country_code": "KEN",
+  "risk_level": 2,
+  "risk_label": "Exercise Increased Caution",
+  "advisory_summary": "Updated to include a risk indicator for health and to reflect additional safety and security information. Do Not Travel to: Kenya-Somalia border counties (Garissa, Wajir, Mandera), Tana River County, and coastal areas north of Malindi due to terrorism and kidnapping; West Pokot and western Turkana County due to banditry; Parts of Marsabit and Turkana Counties within 30 miles (50 kilometers) of the Ethiopian border due to cross-border incursions. Reconsider Travel to: The Nairobi neighborhoods of Eastleigh and Kibera due to crime and kidnapping . Country Summary: Violent crime, such as armed carjacking, mugging, home invasion, and kidnapping, can occur at any time. Local police often lack the capability to respond effectively to serious crimes and terrorist attacks.\u00a0 Emergency medical and fire services are limited. Avoid traveling after dark in Kenya due to crime and poor traffic safety. Crime Motorycle crimes are common, where thieves grab items from victims and are able to quickly flee the scene. Crimes typically occur in crowded areas or when people are distracted. Police have limited ability to respond to these crimes. \u00a0Handbags, mobile phones, and other easy-to-reach valuables are the most stolen items. Terrorism Terrorist attacks have occurred with little or no warning. They have targeted: Kenyan and foreign government buildings, Tourist locations, Transportation hubs, Hotels and resorts, Markets and shopping malls, and Places of worship. Terrorist acts have included armed assaults, suicide operations, bomb or grenade attacks, and kidnappings. Demonstrations Demonstrations, strikes, and other political and economic protests are common. They often block key intersections or highways, resulting in widespread traffic jams. Violence during demonstrations has occurred across the country. This includes rock-throwing and police using deadly force. Political violence is most common in western Kenya and Nairobi. Health Access to medical care in Kenya is limited and medical facilities may not have adequate supply of medicine, especially outside large cities. Medical evacuation insurance valid for travel to Kenya is strongly recommended. Hospitals usually require payment before treatment. Unlicensed facilities and bribes Some schools and behavior modification facilities in Kenya operate without licensing and oversight. Reports of U.S. citizens being held against their will or being physically abused in these facilities are common. The embassy has also received numerous reports from young adults whose U.S. passports were taken away by their families. The embassy frequently receives complaints from U.S. citizens about being stopped by police or immigration or customs officials asking for bribes. Property confiscations Property disputes are common and can turn violent. Some U.S. citizens have had their property confiscated or been threatened. Read the country information page for additional information about travel to Kenya. If you decide to travel to Ken",
+  "regional_warnings": [],
+  "entry_exit_requirements": "",
+  "event_types": [
+    "kidnapping",
+    "terrorism",
+    "civil_unrest",
+    "conflict",
+    "crime",
+    "health"
+  ],
+  "advisory_url": "https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories/kenya-travel-advisory.html",
+  "pub_date": "Mon, 17 Mar 2025",
+  "fetched_at": "2026-03-04T23:14:39.741301+00:00"
+}

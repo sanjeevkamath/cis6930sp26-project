@@ -1,0 +1,19 @@
+{
+  "country_name": "Egypt",
+  "country_code": "EGY",
+  "risk_level": 2,
+  "risk_label": "Exercise Increased Caution",
+  "advisory_summary": "Exercise increased caution in Egypt \u00c2\u00a0due to terrorism , crime , and health . Some areas have increased risk.\u00c2 The U.S. Embassy has limited ability to help dual national U.S.-Egyptian citizens who are arrested or detained. Egyptian law considers dual citizens to be solely Egyptian citizens. Terrorism There is risk of terrorist violence, including terrorist attacks and other activity in Northern and Middle Sinai Peninsula.\u00c2\u00a0 Visit the U.S. Department of State's country reports on terrorism to learn more. Terrorists may attack with little or no warning:\u00c2 Egyptian authorities generally offer effective security protection.\u00c2\u00a0 However, extremists continue to express interest in planning and carrying out attacks.\u00c2\u00a0 Security is generally present at potential targets, which include:\u00c2\u00a0\u00c2 Religious sites (mosques, churches, monasteries, and buses traveling there)\u00c2 Local government buildings, and diplomatic facilities (embassies)\u00c2 Tourist sites\u00c2 Transportation centers\u00c2 Shopping malls\u00c2 Restaurants and foreign businesses\u00c2\u00a0\u00c2 Resorts\u00c2 Roadside checkpoints\u00c2 Urban areas in Cairo\u00c2 Crime Most crimes against foreigners are crimes of opportunity, like purse snatching and pickpocketing.\u00c2\u00a0 Harassment of women, including foreigners, is a problem in Egypt.\u00c2\u00a0 It can include vulgar comments, gestures, indecent exposure, and unwanted physical contact.\u00c2\u00a0 Tourists should beware of overcharging and scams in tourist areas.\u00c2\u00a0 Review the\u00e2\u0080\u00af Country Security Report\u00e2\u0080\u00affor Egypt for further details.\u00c2\u00a0\u00c2 Health\u00c2\u00a0\u00c2 Emergency and intensive care facilities are limited in Egypt and may be unavailable in remote areas.\u00c2\u00a0 Ambulances are rare, unreliable in most areas, and don\u00e2\u0080\u0099t have advanced medical equipment.\u00c2 Global polio Some international destinations, including Egypt, have circulating poliovirus.\u00c2\u00a0 Before traveling to Egypt, make sure you are up to date on your polio vaccines.\u00c2\u00a0 Check the CDC website for current vaccination recommendations . Demonstrations Protests or demonstrations may occur suddenly:\u00c2\u00a0 \u00c2 Individuals have been arrested for being in the vicinity of protests in Egypt, even when not actively participating.\u00c2\u00a0 \u00c2 U.S. citizens have been arrested for participating in protests.\u00c2 You may be detained for posting anything on social media seen as critical of Egypt or its allies, or for disrespecting its cultural sites.\u00c2 Local law prohibits protesting or demonstrating without a permit.\u00c2 Do not travel to: The Northern and Middle Sinai Peninsula due to terrorism. \u00e2\u0080\u00af The Western Desert due to risk to safety and security unless traveling with a professionally licensed tour company. Egyptian border areas due to\u00e2\u0080\u00af military zones .",
+  "regional_warnings": [],
+  "entry_exit_requirements": "",
+  "event_types": [
+    "terrorism",
+    "civil_unrest",
+    "conflict",
+    "crime",
+    "health"
+  ],
+  "advisory_url": "https://travel.state.gov/content/tsg_aem/us/en/home/international-travel/travel-advisories/destination.egy.html",
+  "pub_date": "Tue, 15 Jul 2025",
+  "fetched_at": "2026-03-04T23:14:39.743405+00:00"
+}

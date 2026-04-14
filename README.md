@@ -4,7 +4,7 @@
 
 This project builds a multi-source data pipeline that synthesizes U.S. State Department travel advisories and news articles into structured travel risk records using an LLM. The core research question: does adding schema validation and a retry loop reduce output volatility by at least 50% compared to single-shot unconstrained generation — measured across 30 countries and repeated runs?
 
-The model is `gpt-oss-120b` running on UF's HiPerGator cluster. Temperature is intentionally set to 1.0 to measure natural variance — setting it to 0 would trivially stabilize outputs and defeat the point.
+Two models are tested: `gpt-oss-120b` (120B-parameter LLM) and `llama-3.1-8b-instruct` (8B-parameter SLM), both running on UF's HiPerGator cluster. Temperature is intentionally set to 1.0 to measure natural variance — setting it to 0 would trivially stabilize outputs and defeat the point.
 
 ---
 
@@ -35,7 +35,11 @@ OPENAI_BASE_URL=https://api.ai.it.ufl.edu/v1
 OPENAI_MODEL=gpt-oss-120b
 ```
 
-The pipeline will pick this up automatically. `OPENAI_BASE_URL` defaults to `https://api.ai.it.ufl.edu/v1` and `OPENAI_MODEL` defaults to `gpt-oss-120b` — override them in `.env` if needed.
+> **Switching models:** To run with the smaller Llama model, change `OPENAI_MODEL` in your `.env`:
+> ```
+> OPENAI_MODEL=llama-3.1-8b-instruct
+> ```
+> No other changes are needed — the pipeline, schema, and prompts are identical for both models.
 
 ---
 
@@ -69,17 +73,52 @@ uv run python -m src.pipeline.orchestrator --country FRA
 uv run python -m src.pipeline.orchestrator --output results/run_001.json
 ```
 
-### Persist results to the database
+---
 
-After running the pipeline, load results into SQLite for stability analysis:
+## Reproducing Results
 
-```python
-from src.servers.load_server import insert_run_results
-import json
+Pre-generated results from all 20 experimental runs (5 constrained + 5 unconstrained × 2 models) are included in `results/`. To reproduce the full analysis from these results without re-running the LLM:
 
-output = json.load(open("results/run_001.json"))
-insert_run_results(output)
+### 1. Load all results into the database
+
+```bash
+uv run python load_all.py
 ```
+
+This reads every JSON file in `results/` and inserts them into the SQLite database at `data/travel_advisory.db`.
+
+### 2. Run the stability analysis
+
+```bash
+uv run python analyze.py
+```
+
+This compares constrained vs. unconstrained runs for both models and prints the stability metrics (row-level Jaccard similarity with bootstrap confidence intervals and volatility reduction).
+
+### 3. Generate paper figures
+
+```bash
+cd paper
+uv run python generate_figures.py
+```
+
+This produces the figures used in the paper (`paper/figures/stability_bar.pdf`, `paper/figures/gpt_per_country.pdf`).
+
+### Running your own experiments
+
+To re-run the full experiment from scratch (requires a `NAVIGATOR_API_KEY`):
+
+```bash
+# GPT-OSS-120B runs (set OPENAI_MODEL=gpt-oss-120b in .env)
+uv run python -m src.pipeline.orchestrator --output results/constrained_run_1.json
+uv run python -m src.pipeline.orchestrator --unconstrained --output results/unconstrained_run_1.json
+
+# Llama runs (change OPENAI_MODEL=llama-3.1-8b-instruct in .env)
+uv run python -m src.pipeline.orchestrator --output results/constrained_run_llama_1.json
+uv run python -m src.pipeline.orchestrator --unconstrained --output results/unconstrained_run_llama_1.json
+```
+
+Repeat for runs 2–5, then load and analyze as shown above.
 
 ---
 
@@ -123,8 +162,8 @@ uv run pytest tests/test_pipeline.py  # orchestrator logic, retry loop, summary 
 
 ```
 State Dept RSS feed ──┐
-                       ├──► LLM (gpt-oss-120b, temp=1.0) ──► Schema Validator ──► SQLite
-News articles ────────┘              ▲ retry w/ error feedback (constrained only)
+                       ├──► LLM (temp=1.0) ──► Schema Validator ──► SQLite
+News articles ────────┘         ▲ retry w/ error feedback (constrained only)
 ```
 
 Five MCP servers handle the pieces:
@@ -141,6 +180,17 @@ The **constrained** condition wraps the LLM call with `schema_validation` and re
 
 ---
 
+## Paper
+
+The research paper is in `paper/`. It is written in LaTeX using the ACM template.
+
+- `paper/paper.tex` — main manuscript
+- `paper/citations.bib` — bibliography
+- `paper/generate_figures.py` — script to regenerate all figures
+- `paper/figures/` — generated PDF/PNG figures
+
+---
+
 ## Project Structure
 
 ```
@@ -151,7 +201,7 @@ cis6930sp26-project/
 │   │   ├── news_extract.py         # MCP server: fetch & cache news
 │   │   ├── schema_validation.py    # MCP server: validate + retry prompt
 │   │   ├── load_server.py          # MCP server: SQLite persistence
-│   │   └── stability_analysis.py  # MCP server: stability metrics
+│   │   └── stability_analysis.py   # MCP server: stability metrics
 │   ├── pipeline/
 │   │   └── orchestrator.py         # LLM orchestration + retry loop
 │   └── schema/
@@ -159,16 +209,20 @@ cis6930sp26-project/
 │       └── target_countries.json   # 30 target countries with ISO codes
 ├── tests/
 │   ├── test_servers.py             # 94 tests for all MCP servers
-│   └── test_pipeline.py            # 47 tests for orchestrator
+│   └── test_pipeline.py           # 47 tests for orchestrator
 ├── data/
 │   ├── raw/
 │   │   ├── state_dept/             # Cached advisories ({CODE}.json)
 │   │   └── news/                   # Cached news articles ({CODE}.json)
-│   └── travel_advisory.db          # SQLite database (created on first run)
-├── results/
-│   └── preliminary_results.md
-├── docs/
-│   └── progress_report.md
+│   └── travel_advisory.db          # SQLite database (created on first load)
+├── results/                        # Pre-generated LLM outputs (20 JSON files)
+├── paper/                          # LaTeX paper + figures
+│   ├── paper.tex
+│   ├── citations.bib
+│   ├── generate_figures.py
+│   └── figures/
+├── load_all.py                     # Bulk-load all results into SQLite
+├── analyze.py                      # Run stability analysis across all runs
 └── pyproject.toml
 ```
 
@@ -180,4 +234,4 @@ cis6930sp26-project/
 |---|---|---|
 | `NAVIGATOR_API_KEY` | *(required)* | API key for the UF HiPerGator LLM endpoint |
 | `OPENAI_BASE_URL` | `https://api.ai.it.ufl.edu/v1` | LLM API base URL |
-| `OPENAI_MODEL` | `gpt-oss-120b` | Model name |
+| `OPENAI_MODEL` | `gpt-oss-120b` | Model name (`gpt-oss-120b` or `llama-3.1-8b-instruct`) |

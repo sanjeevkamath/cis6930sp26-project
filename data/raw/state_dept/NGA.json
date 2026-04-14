@@ -1,0 +1,20 @@
+{
+  "country_name": "Nigeria",
+  "country_code": "NGA",
+  "risk_level": 3,
+  "risk_label": "Reconsider Travel",
+  "advisory_summary": "Updated to reflect inconsistent availability of health care services. Reconsider travel to Nigeria due to crime , terrorism , civil unrest , kidnapping , armed gangs, and inconsistent availability of health care services . Some places in Nigeria have an increased risk. Overall, all locations carry significant security risks. Read the entire Travel Advisory. Do Not Travel to : Borno, Yobe, Kogi, and northern Adamawa states due to terrorism and kidnapping Bauchi, Gombe, Kaduna, Kano, Katsina, Sokoto, and Zamfara states due to kidnapping Abia, Anambra, Bayelsa, Delta, Enugu, Imo, and Rivers states (with the exception of Port Harcourt) due to crime , kidnapping , and armed gangs. Country Summary : Violent crime is common in the country. This includes armed robbery, assault, carjacking, kidnapping, hostage-taking, roadside banditry, and rape. Kidnappings for ransom happen often. They primarily target dual national citizens visiting Nigeria and U.S. citizens perceived as wealthy. Kidnapping gangs have also stopped victims on interstate roads. Terrorism There is risk of terrorist violence in Nigeria. This includes terrorist attacks and other activities. Terrorists continue plotting and carrying out attacks in Nigeria. Terrorists collaborate with local gangs to expand their reach. They may attack with little or no warning, including: Shopping centers and malls Markets Hotels Places of worship Restaurants and bars Schools Government buildings Transportation hubs Public places where crowds gather Visit the U.S. Department of State's country reports on terrorism to learn more. Gangs and crime Civil unrest and armed gangs are active in parts of Southern Nigeria. This is especially true in the Niger Delta and Southeast regions. Armed crime and gangs are common in the area. Crimes include kidnapping and assaults on Nigerian security services. Violence can flare up between communities of farmers and herders in rural areas. Unreliable health care U.S. citizens should not expect the same level of health care to be available in Nigeria as they do in the United States: Nigerian medical facilities are generally not equipped to U.S. or European standards. Many medicines are not available. This includes common medications for diabetes or asthma. Bring enough over-the-counter and prescription medicines to last your entire stay in Nigeria. Update vaccinations to include all standard vaccinations, plus yellow fever, meningitis, typhoid, cholera, hepatitis A, hepatitis B, and a polio booster. All visitors should take Malaria prophylaxis. Nigeria is high risk for Malaria. Counterfeit pharmaceuticals are a common problem. Hospitals often expect immediate cash payment for health services. Most hospitals and doctors do not accept U.S. health insurance. Emergency services like those in the United States or Europe do not exist. Blood supply is often unreliable. Ambulance services are unreliable, have poor equipment, and often do not have trained paramedics. We strongly recommen",
+  "regional_warnings": [],
+  "entry_exit_requirements": "",
+  "event_types": [
+    "kidnapping",
+    "terrorism",
+    "civil_unrest",
+    "conflict",
+    "crime",
+    "health"
+  ],
+  "advisory_url": "https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories/nigeria-travel-advisory.html",
+  "pub_date": "Tue, 15 Jul 2025",
+  "fetched_at": "2026-03-04T23:14:39.744257+00:00"
+}

@@ -1,0 +1,1156 @@
+{
+  "run_id": "run-20260413-223202-8133a7",
+  "timestamp": "2026-04-13T22:32:02.519352+00:00",
+  "constrained": false,
+  "model": "llama-3.1-8b-instruct",
+  "temperature": 1.0,
+  "results": [
+    {
+      "status": "success",
+      "country_code": "AUS",
+      "country_name": "Australia",
+      "record": {
+        "country_name": "Australia",
+        "country_code": "AUS",
+        "risk_level": 1,
+        "risk_label": "Exercise Normal Precautions",
+        "event_types": [
+          "health"
+        ],
+        "advisory_summary": "Exercise normal precautions in Australia; enroll in STEP, prepare for emergency situations, and review travel health information.",
+        "regional_warnings": [],
+        "entry_exit_requirements": "",
+        "news_headlines": [
+          "Ultrahuman unveils Ring PRO & Jade AI health coach"
+        ],
+        "run_id": "run-20260413-223202-8133a7",
+        "timestamp": "2026-04-13T22:32:02.519352+00:00",
+        "citations": [
+          {
+            "url": "https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories/australia-travel-advisory.html"
+          },
+          {
+            "url": "https://futurefive.com.au/story/ultrahuman-unveils-ring-pro-jade-ai-health-coach",
+            "title": "Ultrahuman unveils Ring PRO & Jade AI health coach"
+          }
+        ]
+      },
+      "attempts": 1,
+      "errors": []
+    },
+    {
+      "status": "success",
+      "country_code": "CAN",
+      "country_name": "Canada",
+      "record": {
+        "country_name": "Canada",
+        "country_code": "CAN",
+        "risk_level": 1,
+        "risk_label": "Exercise Normal Precautions",
+        "event_types": [],
+        "advisory_summary": "Canada is generally a safe destination for travelers, but travelers should exercise normal precautions.",
+        "regional_warnings": [],
+        "entry_exit_requirements": "",
+        "news_headlines": [
+          "She was about to take her Ottawa business national, when the Spice Girls' lawyers threatened to sue"
+        ],
+        "run_id": "run-20260413-223202-8133a7",
+        "timestamp": "2026-04-13T22:32:02.519352+00:00"
+      },
+      "attempts": 1,
+      "errors": []
+    },
+    {
+      "status": "success",
+      "country_code": "FRA",
+      "country_name": "France",
+      "record": {
+        "country_name": "France",
+        "country_code": "FRA",
+        "risk_level": 2,
+        "risk_label": "Exercise Increased Caution",
+        "event_types": [
+          "terrorism",
+          "unrest",
+          "crime"
+        ],
+        "advisory_summary": "Exercise increased caution due to terrorism, unrest, and crime in crowded areas and potential protests in Paris and other cities.",
+        "regional_warnings": [],
+        "entry_exit_requirements": "",
+        "news_headlines": [
+          "World Cup: Ranking all 64 teams in contention with kickoff 100 days away"
+        ],
+        "run_id": "run-20260413-223202-8133a7",
+        "timestamp": "2026-04-13T22:32:02.519352+00:00",
+        "citations": [
+          {
+            "url": "https://travel.state.gov/content/tsg_aem/us/en/home/international-travel/travel-advisories/destination.fra.html",
+            "title": "U.S. Department of State Travel Advisory for France"
+          },
+          {
+            "url": "https://slashdot.org/firehose.pl?op=view&id=180901748",
+            "title": "World Cup: Ranking all 64 teams in contention with kickoff 100 days away"
+          }
+        ]
+      },
+      "attempts": 1,
+      "errors": []
+    },
+    {
+      "status": "success",
+      "country_code": "DEU",
+      "country_name": "Germany",
+      "record": {
+        "country_name": "Germany",
+        "country_code": "DEU",
+        "risk_level": 2,
+        "risk_label": "Exercise Increased Caution",
+        "event_types": [
+          "terrorism"
+        ],
+        "advisory_summary": "Exercise increased caution in Germany due to terrorism threats. Terrorist groups and lone actors may attack public locations with little or no warning.",
+        "regional_warnings": [],
+        "entry_exit_requirements": "",
+        "news_headlines": [
+          "Macron orders France aircraft carrier to Mediterranean"
+        ],
+        "run_id": "run-20260413-223202-8133a7",
+        "timestamp": "2026-04-13T22:32:02.519352+00:00",
+        "citations": [
+          {
+            "url": "https://travel.state.gov/content/tsg_aem/us/en/home/international-travel/travel-advisories/destination.deu.html",
+            "title": "U.S. Department of State"
+          },
+          {
+            "url": "https://apnews.com/article/france-macron-aircraft-carrier-charles-de-gaulle-mediterranean-dd185933de5e5cee87828768c0046fba",
+            "title": "Associated Press"
+          }
+        ]
+      },
+      "attempts": 1,
+      "errors": []
+    },
+    {
+      "status": "success",
+      "country_code": "JPN",
+      "country_name": "Japan",
+      "record": {
+        "country_name": "Japan",
+        "country_code": "JPN",
+        "risk_level": 1,
+        "risk_label": "Exercise Normal Precautions",
+        "event_types": [],
+        "advisory_summary": "Exercise normal precaution in Japan. Use caution when traveling abroad.",
+        "regional_warnings": [],
+        "entry_exit_requirements": "",
+        "news_headlines": [
+          "Paul Skenes dazzles, then Team USA powers pair of homers in World Baseball Classic exhibition win over Giants"
+        ],
+        "citations": [
+          {
+            "url": "https://travel.state.gov/content/tsg_aem/us/en/home/international-travel/travel-advisories/destination.jpn.html",
+            "title": "U.S. Department of State Travel Advisory"
+          },
+          {
+            "url": "https://sports.yahoo.com/mlb/breaking-news/article/paul-skenes-dazzles-then-team-usa-powers-pair-of-homers-in-world-baseball-classic-exhibition-win-over-giants-231535771.html",
+            "title": "Yahoo Entertainment - Paul Skenes dazzles, then Team USA powers pair of homers"
+          }
+        ],
+        "run_id": "run-20260413-223202-8133a7",
+        "timestamp": "2026-04-13T22:32:02.519352+00:00"
+      },
+      "attempts": 1,
+      "errors": []
+    },
+    {
+      "status": "success",
+      "country_code": "NZL",
+      "country_name": "New Zealand",
+      "record": {
+        "country_name": "New Zealand",
+        "country_code": "NZL",
+        "risk_level": 1,
+        "risk_label": "Exercise Normal Precautions",
+        "event_types": [
+          "crime",
+          "terrorism",
+          "civil_unrest",
+          "health",
+          "natural_disaster",
+          "kidnapping",
+          "conflict",
+          "other"
+        ],
+        "advisory_summary": "Exercise normal precautions in New Zealand. Review the Country Security Report and Traveler's Checklist before travel.",
+        "regional_warnings": [],
+        "entry_exit_requirements": "",
+        "news_headlines": [
+          "Rennie named new All Blacks coach"
+        ],
+        "run_id": "run-20260413-223202-8133a7",
+        "timestamp": "2026-04-13T22:32:02.519352+00:00",
+        "citations": [
+          {
+            "url": "https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories/new-zealand-travel-advisory.html",
+            "title": "U.S. Department of State: New Zealand Travel Advisory"
+          },
+          {
+            "url": "https://www.channelnewsasia.com/sport/rennie-named-new-all-blacks-coach-5968426",
+            "title": "CNA: Rennie named new All Blacks coach"
+          }
+        ]
+      },
+      "attempts": 1,
+      "errors": []
+    },
+    {
+      "status": "success",
+      "country_code": "CHE",
+      "country_name": "Switzerland",
+      "record": {
+        "country_name": "Switzerland",
+        "country_code": "CHE",
+        "risk_level": 1,
+        "risk_label": "Exercise Normal Precautions",
+        "event_types": [],
+        "advisory_summary": "Exercise normal precautions in Switzerland. Enroll in STEP, prepare a plan for emergency situations, and check the CDC page for Travelers' Health Information.",
+        "regional_warnings": [],
+        "entry_exit_requirements": "",
+        "news_headlines": [
+          "Trump says \u2018someone from within\u2019 Iranian regime might be best choice to lead once war ends"
+        ],
+        "run_id": "run-20260413-223202-8133a7",
+        "timestamp": "2026-04-13T22:32:02.519352+00:00"
+      },
+      "attempts": 1,
+      "errors": []
+    },
+    {
+      "status": "success",
+      "country_code": "NOR",
+      "country_name": "Norway",
+      "record": {
+        "country_name": "Norway",
+        "country_code": "NOR",
+        "risk_level": 1,
+        "risk_label": "Exercise Normal Precautions",
+        "event_types": [],
+        "advisory_summary": "Exercise normal precautions in Norway; enroll in STEP and review the Country Security Report for emergency situations.",
+        "regional_warnings": [],
+        "entry_exit_requirements": "",
+        "news_headlines": [
+          "Dystopian \u2018Klara and the Sun,\u2019 \u2018Winter Garden\u2019 and more reader book reviews"
+        ],
+        "run_id": "run-20260413-223202-8133a7",
+        "timestamp": "2026-04-13T22:32:02.519352+00:00",
+        "citations": [
+          {
+            "url": "https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories/norway-travel-advisory.html",
+            "title": "Norway Travel Advisory"
+          },
+          {
+            "url": "https://www.denverpost.com/2026/03/03/klara-and-the-sun-winter-garden-book-reviews/",
+            "title": "Book reviews from Denver Post"
+          }
+        ]
+      },
+      "attempts": 1,
+      "errors": []
+    },
+    {
+      "status": "success",
+      "country_code": "BRA",
+      "country_name": "Brazil",
+      "record": {
+        "run_id": "run-20260413-223202-8133a7",
+        "timestamp": "2026-04-13T22:32:02.519352+00:00",
+        "country_name": "Brazil",
+        "country_code": "BRA",
+        "risk_level": 2,
+        "risk_label": "Exercise Increased Caution",
+        "event_types": [
+          "crime",
+          "kidnapping",
+          "terrorism"
+        ],
+        "advisory_summary": "Exercise increased caution in Brazil due to crime and kidnapping. Some areas have increased risk. Violent crime, including murder, armed robbery, and carjacking, can occur in urban areas. There was a kidnapping for ransom of U.S. travelers.",
+        "regional_warnings": [
+          "Anywhere within 160 km/100 miles of Brazil\u2019s land borders with Bolivia, Colombia, Guyana, French Guiana, Paraguay, Peru, Suriname, and Venezuela",
+          "Informal housing developments, such as favelas, vilas, comunidades, or conglomerados",
+          "Brasilia\u2019s \u201cSatellite Cities\u201d at night",
+          "Ceilandia, Santa Maria, Sao Sebastiao, and Paranoa"
+        ],
+        "entry_exit_requirements": "",
+        "news_headlines": [
+          "Paul Skenes dazzles, then Team USA powers pair of homers in World Baseball Classic exhibition win over Giants"
+        ],
+        "citations": [
+          {
+            "url": "https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories/brazil-travel-advisory.html",
+            "title": "BRA - Brazil Travel Advisory"
+          },
+          {
+            "url": "https://sports.yahoo.com/mlb/breaking-news/article/paul-skenes-dazzles-then-team-usa-powers-pair-of-homers-in-world-baseball-classic-exhibition-win-over-giants-231535771.html",
+            "title": "Yahoo Entertainment"
+          }
+        ]
+      },
+      "attempts": 1,
+      "errors": []
+    },
+    {
+      "status": "success",
+      "country_code": "CHN",
+      "country_name": "Mainland China, Hong Kong & Macau - See Summaries",
+      "record": {
+        "country_name": "Mainland China, Hong Kong & Macau - See Summaries",
+        "country_code": "CHN",
+        "risk_level": 2,
+        "risk_label": "Exercise Increased Caution",
+        "event_types": [
+          "crime",
+          "terrorism",
+          "civil_unrest",
+          "health",
+          "natural_disaster",
+          "kidnapping",
+          "conflict",
+          "other"
+        ],
+        "advisory_summary": "Exercise increased caution when traveling to Mainland China due to arbitrary enforcement of local laws. Reconsider travel to Hong Kong due to the arbitrary enforcement of local laws. Reconsider travel to Macau due to limited ability to provide emergency consular services and arbitrary enforcement of local laws.",
+        "regional_warnings": [
+          "Mainland China",
+          "Hong Kong",
+          "Macau"
+        ],
+        "entry_exit_requirements": "Enter on a valid U.S. passport and keep it with you. Consider enrolling in the Smart Traveler Enrollment Program (STEP) to receive alerts and make it easier to locate you in an emergency.",
+        "news_headlines": [
+          "A Dire Warning From the Tech World"
+        ],
+        "run_id": "run-20260413-223202-8133a7",
+        "timestamp": "2026-04-13T22:32:02.519352+00:00",
+        "citations": [
+          {
+            "url": "https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories/macau-travel-advisory1.html",
+            "title": "Macau Travel Advisory"
+          },
+          {
+            "url": "https://www.theatlantic.com/technology/2026/03/dean-ball-anthropic-interview/686226/",
+            "title": "The Atlantic - A Dire Warning From the Tech World"
+          }
+        ]
+      },
+      "attempts": 1,
+      "errors": []
+    },
+    {
+      "status": "success",
+      "country_code": "IND",
+      "country_name": "India",
+      "record": {
+        "country_name": "India",
+        "country_code": "IND",
+        "risk_level": 2,
+        "risk_label": "Exercise Increased Caution",
+        "event_types": [
+          "crime",
+          "terrorism"
+        ],
+        "advisory_summary": "Exercise increased caution in India due to crime and terrorism in some areas, with violent crimes and terrorist attacks targeting tourist locations, transportation hubs, and government facilities. U.S. government employees must obtain special authorization to travel to rural areas with limited emergency services.",
+        "regional_warnings": [
+          "eastern Maharashtra",
+          "northern Telangana",
+          "western West Bengal"
+        ],
+        "entry_exit_requirements": "",
+        "news_headlines": [
+          "The Power and Peril of Platonic Male Touch"
+        ],
+        "citations": [
+          {
+            "url": "https://travel.state.gov/content/tsg_aem/us/en/home/international-travel/travel-advisories/destination.ind.html",
+            "title": "India Travel Advisory"
+          },
+          {
+            "url": "https://www.psychologytoday.com/us/blog/the-male-friendship-experience/202602/the-power-and-peril-of-platonic-male-touch",
+            "title": "The Power and Peril of Platonic Male Touch"
+          }
+        ],
+        "run_id": "run-20260413-223202-8133a7",
+        "timestamp": "2026-04-13T22:32:02.519352+00:00"
+      },
+      "attempts": 1,
+      "errors": []
+    },
+    {
+      "status": "success",
+      "country_code": "IDN",
+      "country_name": "Indonesia",
+      "record": {
+        "country_name": "Indonesia",
+        "country_code": "IDN",
+        "risk_level": 2,
+        "risk_label": "Exercise Increased Caution",
+        "event_types": [
+          "terrorism",
+          "natural_disaster"
+        ],
+        "advisory_summary": "Exercise increased caution due to terrorism and natural disasters. Some areas have increased risk. Avoid demonstrations and crowds, and enroll in the Smart Traveler Enrollment Program (STEP).",
+        "regional_warnings": [
+          "Central Papua (Papua Tengah)",
+          "Highland Papua (Papua Pegunungan)"
+        ],
+        "entry_exit_requirements": "Ensure your passport is valid for at least six months beyond your arrival date.",
+        "news_headlines": [
+          "Oil prices jump nearly 5%, settle at highest since January 2025 on Middle East conflict"
+        ],
+        "citations": [
+          {
+            "url": "https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories/indonesia-travel-advisory.html",
+            "title": "Indonesia Travel Advisory"
+          },
+          {
+            "url": "https://www.channelnewsasia.com/business/oil-prices-rise-iran-conflict-strait-hormuz-5968416",
+            "title": "Oil prices rise as Iran conflict disrupts Strait of Hormuz"
+          }
+        ],
+        "run_id": "run-20260413-223202-8133a7",
+        "timestamp": "2026-04-13T22:32:02.519352+00:00"
+      },
+      "attempts": 1,
+      "errors": []
+    },
+    {
+      "status": "success",
+      "country_code": "KEN",
+      "country_name": "Kenya",
+      "record": {
+        "country_name": "Kenya",
+        "country_code": "KEN",
+        "risk_level": 2,
+        "risk_label": "Exercise Increased Caution",
+        "event_types": [
+          "crime",
+          "terrorism",
+          "health",
+          "natural_disaster",
+          "civil_unrest",
+          "kidnapping",
+          "conflict",
+          "other"
+        ],
+        "advisory_summary": "Exercise increased caution due to terrorism, kidnapping, crime, health concerns, and civil unrest. Avoid travel to certain border counties, Nairobi neighborhoods, and coastal areas.",
+        "regional_warnings": [
+          "Kenya-Somalia border counties",
+          "Tana River County",
+          "coastal areas north of Malindi",
+          "West Pokot",
+          "western Turkana County",
+          "Parts of Marsabit and Turkana Counties",
+          "Nairobi neighborhoods of Eastleigh and Kibera"
+        ],
+        "entry_exit_requirements": "Visa required. Medical evacuation insurance recommended.",
+        "news_headlines": [
+          "What your Meta smart glasses record doesn\u2019t stay on your smart glasses"
+        ],
+        "run_id": "run-20260413-223202-8133a7",
+        "timestamp": "2026-04-13T22:32:02.519352+00:00"
+      },
+      "attempts": 1,
+      "errors": []
+    },
+    {
+      "status": "success",
+      "country_code": "MEX",
+      "country_name": "Mexico Travel Advisory",
+      "record": {
+        "country_name": "Mexico Travel Advisory",
+        "country_code": "MEX",
+        "risk_level": 2,
+        "risk_label": "Exercise Increased Caution",
+        "event_types": [
+          "terrorism",
+          "crime",
+          "kidnapping"
+        ],
+        "advisory_summary": "Exercise increased caution in Mexico due to terrorism, crime, and kidnapping. Many violent crimes take place in Mexico, including homicide, carjacking, and robbery. There is a risk of terrorist violence, and emergency services are limited in remote or rural areas.",
+        "regional_warnings": [],
+        "entry_exit_requirements": "",
+        "news_headlines": [
+          "Mexico travel warning: Canada urges travellers to \u2018exercise a high degree of caution\u2019 after cartel violence erupts following \u2018El Mencho\u2019 death"
+        ],
+        "citations": [
+          {
+            "url": "https://travel.state.gov/content/tsg_aem/us/en/home/international-travel/travel-advisories/destination.mex.html",
+            "title": "U.S. Department of State - Mexico Travel Advisory"
+          },
+          {
+            "url": "https://economictimes.indiatimes.com/news/international/canada/mexico-travel-warning-canada-urges-travellers-to-exercise-a-high-degree-of-caution-after-cartel-violence-erupts-following-el-mencho-death/articleshow/128768100.cms",
+            "title": "The Times of India - Mexico Travel Warning"
+          }
+        ],
+        "run_id": "run-20260413-223202-8133a7",
+        "timestamp": "2026-04-13T22:32:02.519352+00:00"
+      },
+      "attempts": 1,
+      "errors": []
+    },
+    {
+      "status": "success",
+      "country_code": "NPL",
+      "country_name": "Nepal",
+      "record": {
+        "country_name": "Nepal",
+        "country_code": "NPL",
+        "risk_level": 3,
+        "risk_label": "Reconsider Travel",
+        "event_types": [
+          "civil_unrest",
+          "terrorism"
+        ],
+        "advisory_summary": "Reconsider travel to Nepal due to civil unrest. Protests turned violent on September 8-9, 2025, with deaths and injuries. Curfews have been declared in major cities, and additional protests and curfews could happen with little warning.",
+        "regional_warnings": [
+          "Kathmandu",
+          "Pokhara"
+        ],
+        "entry_exit_requirements": "",
+        "news_headlines": [
+          "\u2018Supacell\u2019 actor Ghetts sentenced to 12 years in prison"
+        ],
+        "citations": [
+          {
+            "url": "https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories/nepal-travel-advisory.html",
+            "title": "Nepal Travel Advisory"
+          }
+        ],
+        "run_id": "run-20260413-223202-8133a7",
+        "timestamp": "2026-04-13T22:32:02.519352+00:00"
+      },
+      "attempts": 1,
+      "errors": []
+    },
+    {
+      "status": "success",
+      "country_code": "ZAF",
+      "country_name": "South Africa",
+      "record": {
+        "country_name": "South Africa",
+        "country_code": "ZAF",
+        "risk_level": 2,
+        "risk_label": "Exercise Increased Caution",
+        "event_types": [
+          "crime",
+          "terrorism",
+          "civil_unrest",
+          "kidnapping"
+        ],
+        "advisory_summary": "Violent crime is common and includes robbery, rape, carjacking and mugging. There is a risk of terrorist violence, including terrorist attacks and other activity. Demonstrations, protests, and strikes occur frequently and can turn violent.",
+        "regional_warnings": [],
+        "entry_exit_requirements": "Keep a copy of your U.S. passport and visa (if applicable) and keep original documents in a secure location.",
+        "news_headlines": [
+          "All Blacks coach: Charting the rise of Dave Rennie - from club rugby to head coach of the All Blacks"
+        ],
+        "run_id": "run-20260413-223202-8133a7",
+        "timestamp": "2026-04-13T22:32:02.519352+00:00",
+        "citations": [
+          {
+            "url": "https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories/south-africa-travel-advisory.html",
+            "title": "U.S. Department of State's South Africa Travel Advisory"
+          }
+        ]
+      },
+      "attempts": 1,
+      "errors": []
+    },
+    {
+      "status": "success",
+      "country_code": "THA",
+      "country_name": "Thailand",
+      "record": {
+        "country_name": "Thailand",
+        "country_code": "THA",
+        "risk_level": 2,
+        "risk_label": "Exercise Increased Caution",
+        "event_types": [
+          "civil_unrest",
+          "conflict"
+        ],
+        "advisory_summary": "Exercise increased caution due to civil unrest associated with ongoing insurgent activities in the Yala, Pattani, and Narathiwat provinces. Periodic violence between Thai security services and armed insurgents has been known to occur in Thailand's three southernmost provinces. There is a collateral risk of violence for U.S. citizens in Thailand's southernmost provinces due to low intensity conflict.",
+        "regional_warnings": [
+          "Yala Province",
+          "Pattani Province",
+          "Narathiwat Province",
+          "Cambodian and Thai border"
+        ],
+        "entry_exit_requirements": "No specific requirements mentioned in the advisory.",
+        "news_headlines": [
+          "Amazon SageMaker Unified Studio now supports AWS Glue 5.1 for data processing jobs"
+        ],
+        "run_id": "run-20260413-223202-8133a7",
+        "timestamp": "2026-04-13T22:32:02.519352+00:00",
+        "citations": [
+          {
+            "url": "https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories/thailand-travel-advisory.html",
+            "title": "U.S. Department of State Travel Advisory: Thailand"
+          },
+          {
+            "url": "https://aws.amazon.com/about-aws/whats-new/2026/03/amazon-sagemaker-unified-studio-aws-glue-5-1/",
+            "title": "Amazon SageMaker Unified Studio now supports AWS Glue 5.1 for data processing jobs"
+          }
+        ]
+      },
+      "attempts": 1,
+      "errors": []
+    },
+    {
+      "status": "success",
+      "country_code": "TUR",
+      "country_name": "Turkey",
+      "record": {
+        "country_name": "Turkey",
+        "country_code": "TUR",
+        "risk_level": 2,
+        "risk_label": "Exercise Increased Caution",
+        "event_types": [
+          "terrorism",
+          "crime"
+        ],
+        "advisory_summary": "Exercise increased caution when traveling to Turkey due to terrorism and arbitrary detentions. Avoid demonstrations, crowds, and areas near the Syrian border. Terrorist attacks, arbitrary detentions, and civil unrest are major concerns.",
+        "regional_warnings": [
+          "Sirnak province",
+          "Hakkari province",
+          "Syrian border (within 6 miles/10 kilometers)"
+        ],
+        "entry_exit_requirements": "Check the official government websites for the most up-to-date information on entry, exit, and visa requirements.",
+        "news_headlines": [
+          "World Cup wrap: North slip to defeat in Switzerland"
+        ],
+        "run_id": "run-20260413-223202-8133a7",
+        "timestamp": "2026-04-13T22:32:02.519352+00:00",
+        "citations": [
+          {
+            "url": "https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories/turkey-travel-advisory.html",
+            "title": "U.S. Department of State Travel Advisory"
+          },
+          {
+            "url": "https://www.rte.ie/sport/soccer/2026/0303/1561508-world-cup-wrap-north-slip-to-defeat-in-switzerland/",
+            "title": "RTE Sport - World Cup wrap: North slip to defeat in Switzerland"
+          }
+        ]
+      },
+      "attempts": 1,
+      "errors": []
+    },
+    {
+      "status": "success",
+      "country_code": "COL",
+      "country_name": "Colombia",
+      "record": {
+        "country_name": "Colombia",
+        "country_code": "COL",
+        "risk_level": 3,
+        "risk_label": "Reconsider Travel",
+        "event_types": [
+          "crime",
+          "terrorism",
+          "civil_unrest",
+          "kidnapping"
+        ],
+        "advisory_summary": "Reconsider travel to Colombia due to crime, terrorism, civil unrest, and kidnapping. Some areas have an increased risk.",
+        "regional_warnings": [
+          "Arauca",
+          "Cauca (excluding Popay\u00e1n)",
+          "Norte de Santander",
+          "Colombia-Venezuela border region"
+        ],
+        "entry_exit_requirements": "",
+        "news_headlines": [
+          "Amazon Deploys 15-Minute Delivery in Brazil Expansion"
+        ],
+        "run_id": "run-20260413-223202-8133a7",
+        "timestamp": "2026-04-13T22:32:02.519352+00:00",
+        "citations": [
+          {
+            "url": "https://travel.state.gov/content/tsg_aem/us/en/home/international-travel/travel-advisories/destination.col.html",
+            "title": "U.S. Department of State Travel Advisory"
+          },
+          {
+            "url": "https://www.pymnts.com/amazon/2026/amazon-deploys-15-minute-delivery-in-brazil-expansion/",
+            "title": "Amazon Deploys 15-Minute Delivery in Brazil Expansion"
+          }
+        ]
+      },
+      "attempts": 1,
+      "errors": []
+    },
+    {
+      "status": "success",
+      "country_code": "EGY",
+      "country_name": "Egypt",
+      "record": {
+        "country_name": "Egypt",
+        "country_code": "EGY",
+        "risk_level": 2,
+        "risk_label": "Exercise Increased Caution",
+        "event_types": [
+          "terrorism",
+          "crime",
+          "health"
+        ],
+        "advisory_summary": "Exercise increased caution in Egypt due to terrorism, crime, and health concerns. Some areas have increased risk, including the Northern and Middle Sinai Peninsula. There are also concerns about limited medical facilities and the risk of polio.",
+        "regional_warnings": [
+          "Northern and Middle Sinai Peninsula",
+          "Western Desert",
+          "Egyptian border areas"
+        ],
+        "entry_exit_requirements": "Visa requirements apply; check with the Egyptian government for the most up-to-date information.",
+        "news_headlines": [
+          "Trump\u2019s Choice To Attack Iran Creating Worldwide Chaos Just Days In"
+        ],
+        "run_id": "run-20260413-223202-8133a7",
+        "timestamp": "2026-04-13T22:32:02.519352+00:00",
+        "citations": [
+          {
+            "url": "https://travel.state.gov/content/tsg_aem/us/en/home/international-travel/travel-advisories/destination.egy.html",
+            "title": "U.S. Department of State's Travel Advisory for Egypt"
+          },
+          {
+            "url": "https://www.huffpost.com/entry/trump-iran-chaos_n_69a749d5e4b0085f232a41ed",
+            "title": "HuffPost: Trump\u2019s Choice To Attack Iran Creating Worldwide Chaos Just Days In"
+          }
+        ]
+      },
+      "attempts": 1,
+      "errors": []
+    },
+    {
+      "status": "success",
+      "country_code": "ETH",
+      "country_name": "Ethiopia",
+      "record": {
+        "country_name": "Ethiopia",
+        "country_code": "ETH",
+        "risk_level": 3,
+        "risk_label": "Reconsider Travel",
+        "event_types": [
+          "civil_unrest",
+          "crime",
+          "terrorism",
+          "kidnapping",
+          "natural_disaster"
+        ],
+        "advisory_summary": "Reconsider travel to Ethiopia due to sporadic violent conflict, civil unrest, crime, communications disruptions, terrorism, and kidnapping in border areas. Do not travel to Tigray Region and border with Eritrea, Afar-Tigray border areas, Amhara Region, Gambella and Benishangul Gumuz Regions, Oromia Region, Southern Nations and National People (SNNP) Region, border area with Somalia, border areas with Sudan, and South Sudan, and border areas with Kenya due to various high-risk situations.",
+        "regional_warnings": [
+          "Tigray Region",
+          "Afar-Tigray border areas",
+          "Amhara Region",
+          "Gambella and Benishangul Gumuz Regions",
+          "Oromia Region",
+          "Southern Nations and National People (SNNP) Region",
+          "Border area with Somalia",
+          "Border areas with Sudan, and South Sudan",
+          "Border areas with Kenya"
+        ],
+        "entry_exit_requirements": "Please check the official government website for the most up-to-date entry requirements.",
+        "news_headlines": [
+          "Thong Tanlines of the Day"
+        ],
+        "run_id": "run-20260413-223202-8133a7",
+        "timestamp": "2026-04-13T22:32:02.519352+00:00",
+        "citations": [
+          {
+            "url": "https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories/ethiopia-travel-advisory.html",
+            "title": "U.S. Department of State: Ethiopia Travel Advisory"
+          },
+          {
+            "url": "https://drunkenstepfather.com/2026/03/03/thong-tanlines-of-the-day",
+            "title": "Drunkenstepfather.com: Thong Tanlines of the Day"
+          }
+        ]
+      },
+      "attempts": 1,
+      "errors": []
+    },
+    {
+      "status": "success",
+      "country_code": "PAK",
+      "country_name": "Pakistan",
+      "record": {
+        "country_name": "Pakistan",
+        "country_code": "PAK",
+        "risk_level": 3,
+        "risk_label": "Reconsider Travel",
+        "event_types": [
+          "crime",
+          "terrorism",
+          "civil_unrest",
+          "conflict",
+          "kidnapping"
+        ],
+        "advisory_summary": "Reconsider travel to Pakistan due to armed conflict, terrorism, crime, and kidnapping. Armed conflict and terrorism pose significant threats, while local unrest and crime also occur. Limited U.S. consular assistance available in some areas.",
+        "regional_warnings": [
+          "Balochistan",
+          "Khyber Pakhtunkhwa",
+          "Pakistan-administered Azad Kashmir"
+        ],
+        "entry_exit_requirements": "Check with the Pakistani government for the most up-to-date requirements for U.S. citizens",
+        "news_headlines": [
+          "Americans stranded by war in Middle East express frustration"
+        ],
+        "run_id": "run-20260413-223202-8133a7",
+        "timestamp": "2026-04-13T22:32:02.519352+00:00",
+        "citations": [
+          {
+            "url": "https://travel.state.gov/content/tsg_aem/us/en/home/international-travel/travel-advisories/destination.pak.html",
+            "title": "Travel Advisory for Pakistan"
+          },
+          {
+            "url": "https://www.cnn.com/2026/03/03/politics/americans-stranded-middle-east",
+            "title": "CNN - Americans stranded by war in Middle East express frustration"
+          }
+        ]
+      },
+      "attempts": 1,
+      "errors": []
+    },
+    {
+      "status": "success",
+      "country_code": "NGA",
+      "country_name": "Nigeria",
+      "record": {
+        "country_name": "Nigeria",
+        "country_code": "NGA",
+        "risk_level": 3,
+        "risk_label": "Reconsider Travel",
+        "event_types": [
+          "crime",
+          "terrorism",
+          "civil_unrest",
+          "kidnapping",
+          "health"
+        ],
+        "advisory_summary": "Nigeria has an increased risk of crime, terrorism, civil unrest, and kidnapping, as well as unreliable health care services. Some areas have a higher risk level, and travelers are advised to exercise caution.",
+        "regional_warnings": [
+          "Borno",
+          "Yobe",
+          "Kogi",
+          "northern Adamawa",
+          "Bauchi",
+          "Gombe",
+          "Kaduna",
+          "Kano",
+          "Katsina",
+          "Sokoto",
+          "Zamfara",
+          "Abia",
+          "Anambra",
+          "Bayelsa",
+          "Delta",
+          "Enugu",
+          "Imo",
+          "Rivers",
+          "Port Harcourt"
+        ],
+        "entry_exit_requirements": "Visa requirements vary; U.S. citizens should check with the Nigerian embassy for the latest information.",
+        "news_headlines": [
+          "Notre Dame\u2019s Hannah Hidalgo is the ACC Player of the Year"
+        ],
+        "run_id": "run-20260413-223202-8133a7",
+        "timestamp": "2026-04-13T22:32:02.519352+00:00",
+        "citations": [
+          {
+            "url": "https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories/nigeria-travel-advisory.html",
+            "title": "Nigeria Travel Advisory"
+          }
+        ]
+      },
+      "attempts": 1,
+      "errors": []
+    },
+    {
+      "status": "success",
+      "country_code": "PNG",
+      "country_name": "Papua New Guinea",
+      "record": {
+        "country_name": "Papua New Guinea",
+        "country_code": "PNG",
+        "risk_level": 3,
+        "risk_label": "Reconsider Travel",
+        "event_types": [
+          "crime",
+          "civil_unrest",
+          "terrorism",
+          "natural_disaster"
+        ],
+        "advisory_summary": "Reconsider travel due to crime, civil unrest, and piracy. Exercise increased caution due to kidnapping, unexploded ordnance, and inconsistent availability of healthcare services. Some areas have increased risk.",
+        "regional_warnings": [
+          "Central Bougainville",
+          "The Highlands region (excluding Mt. Hagen and Goroka)",
+          "Bismarck and Solomon Seas along Papua New Guinea's north and eastern coasts"
+        ],
+        "entry_exit_requirements": "Check with the Embassy for the latest information on travel requirements.",
+        "news_headlines": [
+          "We are losing the stars, night by night, light by light"
+        ],
+        "run_id": "run-20260413-223202-8133a7",
+        "timestamp": "2026-04-13T22:32:02.519352+00:00",
+        "citations": [
+          {
+            "url": "https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories/papua-new-guinea-travel-advisory.html",
+            "title": "Papua New Guinea Travel Advisory"
+          },
+          {
+            "url": "https://www.abc.net.au/news/2026-03-04/light-pollution-causing-stars-to-vanish-in-urban-night-skies/106299584",
+            "title": "Light pollution causing stars to vanish in urban night skies"
+          }
+        ]
+      },
+      "attempts": 1,
+      "errors": []
+    },
+    {
+      "status": "success",
+      "country_code": "AFG",
+      "country_name": "Afghanistan",
+      "record": {
+        "country_name": "Afghanistan",
+        "country_code": "AFG",
+        "risk_level": 4,
+        "risk_label": "Do Not Travel",
+        "event_types": [
+          "civil_unrest",
+          "crime",
+          "terrorism",
+          "health",
+          "natural_disaster",
+          "kidnapping",
+          "conflict"
+        ],
+        "advisory_summary": "Avoid travel to Afghanistan due to civil unrest, crime, terrorism, risk of wrongful detention, kidnapping, natural disasters, and limited health facilities. The Taliban actively surveil and monitor travelers, and multiple terrorist groups are active in the country. U.S. citizens are targeted for violence and detention, and foreigners are often viewed with suspicion.",
+        "regional_warnings": [],
+        "entry_exit_requirements": "",
+        "news_headlines": [
+          "UK stops issuing student visas for four nations"
+        ],
+        "run_id": "run-20260413-223202-8133a7",
+        "timestamp": "2026-04-13T22:32:02.519352+00:00",
+        "citations": [
+          {
+            "url": "https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories/afghanistan-advisory.html",
+            "title": "Afghanistan Travel Advisory"
+          },
+          {
+            "url": "https://www.dw.com/en/uk-britain-student-visas-suspended-afghanistan-cameroon-myanmar-sudan/a-76206876",
+            "title": "UK stops issuing student visas for four nations"
+          }
+        ]
+      },
+      "attempts": 1,
+      "errors": []
+    },
+    {
+      "status": "success",
+      "country_code": "PRK",
+      "country_name": "North Korea",
+      "record": {
+        "country_name": "North Korea",
+        "country_code": "PRK",
+        "risk_level": 4,
+        "risk_label": "Do Not Travel",
+        "event_types": [
+          "terrorism",
+          "crime",
+          "civil_unrest",
+          "health",
+          "natural_disaster",
+          "kidnapping",
+          "conflict"
+        ],
+        "advisory_summary": "Do not travel to North Korea due to the continuing serious risk of arrest, long-term detention, and the threat of wrongful detention of U.S. citizens. U.S. passports cannot be used to travel to, in, or through North Korea without special validation. The U.S. government cannot provide direct help to U.S. citizens in North Korea in emergencies.",
+        "regional_warnings": [],
+        "entry_exit_requirements": "U.S. passports cannot be used to travel to, in, or through North Korea unless they are specially validated for such travel by the Secretary of State.",
+        "news_headlines": [
+          "How China Sees the War in Iran"
+        ],
+        "run_id": "run-20260413-223202-8133a7",
+        "timestamp": "2026-04-13T22:32:02.519352+00:00",
+        "citations": [
+          {
+            "url": "https://travel.state.gov/content/tsg_aem/us/en/home/international-travel/travel-advisories/destination.prk.html",
+            "title": "North Korea Travel Advisory"
+          },
+          {
+            "url": "http://foreignpolicy.com/2026/03/03/china-iran-war-middle-east-us-military-alliance/",
+            "title": "How China Sees the War in Iran"
+          }
+        ]
+      },
+      "attempts": 1,
+      "errors": []
+    },
+    {
+      "status": "success",
+      "country_code": "RUS",
+      "country_name": "Russia",
+      "record": {
+        "country_name": "Russia",
+        "country_code": "RUS",
+        "risk_level": 4,
+        "risk_label": "Do Not Travel",
+        "event_types": [
+          "terrorism",
+          "unrest",
+          "civil_unrest",
+          "health",
+          "natural_disaster",
+          "kidnapping",
+          "conflict",
+          "crime"
+        ],
+        "advisory_summary": "Do not travel to Russia due to terrorism, unrest, and other risks. The U.S. government has limited ability to help U.S. citizens in Russia. There is a high risk of wrongful detention and electronic device monitoring.",
+        "regional_warnings": [
+          "Moscow",
+          "Kazan",
+          "St. Petersburg",
+          "Dagestan",
+          "Ukraine border"
+        ],
+        "entry_exit_requirements": "Visa requirements apply. U.S. citizens should check the latest information before traveling.",
+        "news_headlines": [
+          "Modern Warfare 2: Lessons from Iran"
+        ],
+        "run_id": "run-20260413-223202-8133a7",
+        "timestamp": "2026-04-13T22:32:02.519352+00:00"
+      },
+      "attempts": 1,
+      "errors": []
+    },
+    {
+      "status": "success",
+      "country_code": "SYR",
+      "country_name": "Syria",
+      "record": {
+        "country_name": "Syria",
+        "country_code": "SYR",
+        "risk_level": 4,
+        "risk_label": "Do Not Travel",
+        "event_types": [
+          "terrorism",
+          "civil_unrest",
+          "kidnapping",
+          "hostage taking",
+          "crime",
+          "armed conflict"
+        ],
+        "advisory_summary": "Do not travel to Syria for any reason. The country has experienced active armed conflict since 2011, with no part of the country being safe from violence. Hostage taking, terrorism, unexploded ordnance, and aerial bombardment pose significant risks, and infrastructure, housing, medical facilities, schools, and power and water utilities have been destroyed.",
+        "regional_warnings": [],
+        "entry_exit_requirements": "Due to the safety risks, the U.S. government cannot offer emergency or routine consular services to U.S. citizens in Syria. U.S. citizens are advised against traveling to Syria.",
+        "news_headlines": [
+          "Huh? Will Cain Digs Up Old Clips to Argue Trump Has \u2018Stayed Consistent\u2019 in Opposing Long Wars"
+        ],
+        "run_id": "run-20260413-223202-8133a7",
+        "timestamp": "2026-04-13T22:32:02.519352+00:00"
+      },
+      "attempts": 1,
+      "errors": []
+    },
+    {
+      "status": "success",
+      "country_code": "YEM",
+      "country_name": "Yemen",
+      "record": {
+        "country_name": "Yemen",
+        "country_code": "YEM",
+        "risk_level": 4,
+        "risk_label": "Do Not Travel",
+        "event_types": [
+          "terrorism",
+          "civil_unrest",
+          "crime",
+          "health",
+          "kidnapping",
+          "natural_disaster"
+        ],
+        "advisory_summary": "U.S. citizens should not travel to Yemen for any reason due to risk of terrorism, unrest, crime, health risks, kidnapping, and landmines. The U.S. Embassy in Sana'a suspended its operations in February 2015.",
+        "regional_warnings": [
+          "Houthi-controlled areas",
+          "Central Yemen"
+        ],
+        "entry_exit_requirements": "Do not travel; U.S. Embassy operations suspended.",
+        "news_headlines": [
+          "Roundup: Hostilities drive up civilian casualties in Mideast, affect aid delivery"
+        ],
+        "run_id": "run-20260413-223202-8133a7",
+        "timestamp": "2026-04-13T22:32:02.519352+00:00",
+        "citations": [
+          {
+            "url": "https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories/yemen-travel-advisory.html",
+            "title": "Yemen Travel Advisory"
+          },
+          {
+            "url": "https://www.thestar.com.my/news/world/2026/03/04/roundup-hostilities-drive-up-civilian-casualties-in-mideast-affect-aid-delivery",
+            "title": "Roundup: Hostilities drive up civilian casualties in Mideast, affect aid delivery"
+          }
+        ]
+      },
+      "attempts": 1,
+      "errors": []
+    },
+    {
+      "status": "success",
+      "country_code": "MMR",
+      "country_name": "Burma (Myanmar)",
+      "record": {
+        "country_name": "Burma (Myanmar)",
+        "country_code": "MMR",
+        "risk_level": 4,
+        "risk_label": "Do Not Travel",
+        "event_types": [
+          "crime",
+          "terrorism",
+          "civil_unrest",
+          "health",
+          "natural_disaster",
+          "kidnapping",
+          "conflict",
+          "other"
+        ],
+        "advisory_summary": "The Burma military regime has deposed elected leaders and officials, leading to armed conflict, civil unrest, and arbitrary enforcement of local laws. U.S. nationals are at risk of wrongful detention, and the military has responded to protests with violence. The potential for civil unrest is high, and travelers are cautioned about the regime's ability to limit access to highways and airports.",
+        "regional_warnings": [
+          "Rangoon",
+          "Karen Highlands of Southeastern Myanmar"
+        ],
+        "entry_exit_requirements": "",
+        "news_headlines": [
+          "Insurgent kinship: the paradoxes of autonomy and dependence in the Karen Highlands of Southeastern Myanmar"
+        ],
+        "run_id": "run-20260413-223202-8133a7",
+        "timestamp": "2026-04-13T22:32:02.519352+00:00",
+        "citations": [
+          {
+            "url": "https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories/burma-travel-advisory.html",
+            "title": "Burma Travel Advisory"
+          },
+          {
+            "url": "https://researchonline.lse.ac.uk/id/eprint/137458/",
+            "title": "Insurgent kinship: the paradoxes of autonomy and dependence in the Karen Highlands of Southeastern Myanmar"
+          }
+        ]
+      },
+      "attempts": 1,
+      "errors": []
+    }
+  ],
+  "summary": {
+    "total": 30,
+    "succeeded": 30,
+    "failed": 0,
+    "schema_pass_rate": 1.0,
+    "avg_attempts": 1.0,
+    "retry_distribution": {
+      "1": 30,
+      "2": 0,
+      "3": 0
+    }
+  }
+}

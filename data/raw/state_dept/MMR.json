@@ -1,0 +1,18 @@
+{
+  "country_name": "Burma (Myanmar)",
+  "country_code": "MMR",
+  "risk_level": 4,
+  "risk_label": "Do Not Travel",
+  "advisory_summary": "Updated to reflect changes to risk indicators, restrictions on U.S. government personnel, and the \u201c If you decide to travel to Burma\u201d section. Do not travel to Burma due to armed conflict, the potential for civil unrest, arbitrary enforcement of local laws, poor health infrastructure, land mines and unexploded ordnance, crime, and wrongful detentions . Country Summary: The Burma military regime deposed elected leaders and officials in a February 2021 coup d'\u00e9tat. Protests and demonstrations against military rule can occur on significant dates. The military has responded to those protests with violence and by arbitrarily detaining protesters and bystanders. The Department has determined that U.S. nationals are at\u00a0significant risk of wrongful detention by military regime authorities. Wrongfully detained U.S. nationals have been held in prison for years, often in poor conditions and without fair and transparent treatment or consistent access to U.S. Embassy officials or their families. Due to the unpredictable nature of ongoing armed conflict and potential civil unrest in Burma, U.S. government employees working in Burma may be prohibited from traveling within the country. Due to the risks in the country, dependents under the age of 21 cannot accompany U.S. government employees who work in Burma. Armed conflicts occur throughout Burma, and the potential for civil unrest is high. The level of armed conflict and civil unrest\u00a0varies significantly between and within states and regions and may change at any time. Attacks by opposition militia on locations connected to the military and security authorities regularly occur in Rangoon and many other parts of the country. Local opposition militia groups actively operate around the country. Travelers are cautioned of the potential for the regime to limit access to highways and airports, causing an isolating situation. Improvised explosive devices (IEDs) are used in the ongoing armed conflicts, including within the greater Rangoon area. From January to December 2024, the U.S. Embassy in Rangoon calculated an average of 21 explosions per month detonated against regime personnel and facilities in Rangoon. Outside of Rangoon, there have been IED attacks against checkpoints and military, administrative, and police facilities. Land mines and unexploded ordnance (UXO)\u00a0exist throughout Burma, and their locations are often not marked or otherwise unidentifiable. The military regime will often arbitrarily enforce local laws , including detaining individuals without fair and transparent treatment . Foreigners, including U.S. citizens, are not excluded from this practice. U.S. citizens traveling or residing in Burma may be detained, and regime authorities could deny a prisoner access to U.S. consular services or information about the alleged crime. Local law enforcement officials may also detain and/or deport U.S. citizens for speaking out or protesting against the military regime, including on their personal social medi",
+  "regional_warnings": [],
+  "entry_exit_requirements": "",
+  "event_types": [
+    "civil_unrest",
+    "conflict",
+    "crime",
+    "health"
+  ],
+  "advisory_url": "https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories/burma-travel-advisory.html",
+  "pub_date": "Mon, 12 May 2025",
+  "fetched_at": "2026-03-04T23:14:39.746071+00:00"
+}

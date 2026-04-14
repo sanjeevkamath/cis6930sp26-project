@@ -1,0 +1,18 @@
+{
+  "country_name": "Brazil",
+  "country_code": "BRA",
+  "risk_level": 2,
+  "risk_label": "Exercise Increased Caution",
+  "advisory_summary": "Updated to add risk indicator for kidnapping . Exercise increased caution in Brazil due to\u202fcrime\u202fand\u202fkidnapping. Some areas have increased risk. Read the entire Travel Advisory. Do not travel to these areas due to\u202fcrime: Anywhere within 160 km/100 miles of Brazil\u2019s land borders with Bolivia, Colombia, Guyana, French Guiana, Paraguay, Peru, Suriname, and Venezuela. This restriction does not apply to the Foz do Iguacu National Park or Pantanal National Park. Informal housing developments, such as favelas, vilas, comunidades, or conglomerados, at any time. Brasilia\u2019s \u201cSatellite Cities\u201d at night. This includes Ceilandia, Santa Maria, Sao Sebastiao, and Paranoa. Country Summary: Violent crime, including murder, armed robbery, and carjacking, can occur in urban areas, day and night. There was a kidnapping for ransom of U.S. travelers. Gang activity and organized crime are widespread and often tied to the recreational drug trade. Assaults, including with sedatives and drugs placed in drinks, are common, especially in Rio de Janeiro. Criminals target foreigners through dating apps or at bars before drugging and robbing their victims. U.S. government employees are advised not to use municipal buses in Brazil because of a serious risk of robbery and assault, especially at night. If you decide to travel to Brazil: Stay aware of your surroundings. Do not physically resist any robbery attempt. Do not accept food or drinks from strangers and always watch your drinks. Use caution when walking or driving at night. Avoid going to bars or nightclubs alone. Avoid walking on beaches after dark. Do not display signs of wealth, such as expensive watches or jewelry. Be alert to date drug scams. Stay alert when visiting banks or ATMs. Be careful at major transportation centers or on public transport, especially at night. Passengers are at higher risk of robbery or assault when using public buses in Brazil. Use increased caution when hiking in isolated areas. Develop a communication plan with family, employer, or host organization so they can monitor your safety and location as you travel through high-risk areas. Specify how you'll confirm you're safe (text, calls, etc.), how often, and who you'll contact first to share the information. Enroll in the Smart Traveler Enrollment Program (STEP) to receive messages and alerts from the U.S. Embassy and make it easier to locate you in an emergency. Review the Country Security Report for Brazil. Prepare a plan for emergency situations. Review the Traveler\u2019s Checklist . Visit the CDC page for the latest\u202fTravel Health Information related to your travel and return to the United States. We highly recommend that you buy insurance before you travel. Check with your travel insurance provider about evacuation assistance, medical insurance, and trip cancellation coverage. International Borders \u2013 Level 4: Do Not Travel Given security risks, U.S. government employees working in Brazil must obtain special authorization to travel within 160 ",
+  "regional_warnings": [],
+  "entry_exit_requirements": "",
+  "event_types": [
+    "kidnapping",
+    "conflict",
+    "crime",
+    "health"
+  ],
+  "advisory_url": "https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories/brazil-travel-advisory.html",
+  "pub_date": "Thu, 29 May 2025",
+  "fetched_at": "2026-03-04T23:14:39.739926+00:00"
+}

@@ -3,7 +3,9 @@ StabilityAnalysisServer — MCP server for measuring LLM output volatility.
 
 Research question: Does schema-constrained generation reduce output volatility ≥50%?
 
-Primary metric:   row_jaccard — mean Jaccard similarity over typed token sets per country.
+Primary metric:   row_jaccard — mean Jaccard similarity over LLM-generated token sets per country.
+                  Tokens: event_type:{v} and regional_warning:{v} only.
+                  risk_level/risk_label excluded (hardcoded from source, not LLM-generated).
 Secondary:        reproducibility_rate, entity_stability, summary_cosine.
 Research claim:   volatility_reduction_pct derived from row_jaccard means across conditions.
 
@@ -96,21 +98,17 @@ def _index_records(records: list[dict]) -> dict[str, dict]:
 def _row_tokens(record: dict) -> frozenset:
     """Convert a record to a set of typed tokens for Jaccard comparison.
 
-    Tokens: "risk_level:{v}", "risk_label:{v}", "event_type:{v}" (one per item),
-            "regional_warning:{v}" (one per item).
+    Tokens: "event_type:{v}" (one per item), "regional_warning:{v}" (one per item).
 
-    Free-text fields are excluded: advisory_summary, entry_exit_requirements,
+    risk_level and risk_label are intentionally excluded: the orchestrator
+    prompt passes these values from the State Department cache and instructs
+    the LLM to echo them unchanged, so they are not LLM-generated outputs
+    and contribute no signal to output volatility measurement.
+
+    Free-text fields are also excluded: advisory_summary, entry_exit_requirements,
     run_id, timestamp, citations, country_name, news_headlines.
     """
     tokens = set()
-
-    risk_level = record.get("risk_level")
-    if risk_level is not None:
-        tokens.add(f"risk_level:{risk_level}")
-
-    risk_label = record.get("risk_label")
-    if risk_label:
-        tokens.add(f"risk_label:{risk_label}")
 
     for et in record.get("event_types", []):
         tokens.add(f"event_type:{et}")
