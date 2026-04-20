@@ -95,15 +95,6 @@ uv run python analyze.py
 
 This compares constrained vs. unconstrained runs for both models and prints the stability metrics (row-level Jaccard similarity with bootstrap confidence intervals and volatility reduction).
 
-### 3. Generate paper figures
-
-```bash
-cd paper
-uv run python generate_figures.py
-```
-
-This produces the figures used in the paper (`paper/figures/stability_bar.pdf`, `paper/figures/gpt_per_country.pdf`).
-
 ### Running your own experiments
 
 To re-run the full experiment from scratch (requires a `NAVIGATOR_API_KEY`):
