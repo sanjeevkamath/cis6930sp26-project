@@ -19,6 +19,10 @@
   stringstyle=\color{red!60!black},
   showstringspaces=false
 }
+\usepackage{titlesec}
+\titleformat{\paragraph}[block]
+ {\normalfont\normalsize\bfseries}{}{0pt}{}
+\titlespacing*{\paragraph}{0pt}{6pt}{3pt}
 
 \begin{document}
 
@@ -34,92 +38,94 @@
 \email{sanjeev.kamath@ufl.edu}
 
 \begin{abstract}
-Deploying Large Language Models (LLMs) as data extraction engines within automated pipelines requires reliable, reproducible outputs. Yet LLMs exhibit significant \emph{output volatility}---the same model, prompt, and input data can produce structurally or semantically distinct JSON records across independent inferences. This paper empirically investigates whether enforcing strict schema constraints combined with an auto-retry feedback loop can substantially reduce this volatility in a real-world geopolitical risk assessment pipeline. We construct a multi-source data pipeline that synthesizes U.S.\ State Department travel advisories and live news articles into structured JSON risk reports for 30 countries. We compare an unconstrained baseline against a constrained condition with schema validation and error-guided retry, testing both a 120B-parameter LLM (\texttt{gpt-oss-\allowbreak 120b}) and an 8B-parameter SLM (\texttt{llama-3.1-\allowbreak 8b}) at temperature $T{=}1.0$. Our hypothesis that schema constraints would reduce volatility by $\geq$50\% is robustly rejected. Schema constraints provide a statistically significant but modest stability gain of $\sim$11.9\% for the SLM, while conferring no statistically significant benefit ($\sim$4.8\%) for the LLM. Counterintuitively, the smaller 8B model demonstrates \emph{higher} baseline stability than the 120B model across all conditions, suggesting that large model expressiveness trades off against structural predictability. A cost analysis further reveals that constrained generation incurs meaningful API overhead from retries, partially negating its limited stability benefits. We conclude that structural enforcement alone is insufficient for production-grade IE pipelines and that semantic canonicalization must be treated as a first-class engineering concern.
+Production pipelines that deploy Large Language Models (LLMs) as structured data extractors often assume that identical inputs yield identical outputs; however, this assumption does not hold in practice. The same model, given the same prompt and input, can produce JSON records that vary structurally or semantically across runs, a phenomenon termed \emph{output volatility}. A common mitigation strategy is the \emph{validate-and-retry} loop, in which schema-violating outputs are rejected and validator feedback is iteratively provided to the model until compliance is achieved. This work evaluates the effectiveness of this approach. A live Travel Risk Assessment pipeline is constructed to synthesize U.S.\ State Department advisories and real-time news into structured JSON risk reports for 30 countries. An unconstrained baseline is compared against a schema-validated retry condition across two model scales: a 120B-parameter LLM (\texttt{gpt-oss-\allowbreak 120b}) and an 8B-parameter Small Language Model (SLM, \texttt{llama-3.1-\allowbreak 8b}), both evaluated at temperature $T{=}1.0$. The hypothesis that schema constraints reduce volatility by at least 50\% is rejected. Constraints yield an 11.9\% stability improvement for the SLM (statistically significant) and 4.8\% for the LLM (not significant). Additionally, the 8B SLM demonstrates 26--29\% greater stability than the 120B LLM across all conditions, suggesting a capacity-consistency tradeoff. Retry mechanisms incur a 30--40\% increase in token usage, further diminishing their effectiveness. These results indicate that structural validation alone is insufficient for achieving production-grade consistency, and that semantic canonicalization remains a critical unresolved challenge.
 \end{abstract}
-
 \maketitle
+\acmConference{CIS 6930}{Spring 2026}{University of Florida}
 
-%% ─────────────────────────────────────────────────────────────────────────────
 \section{Introduction}
-%% ─────────────────────────────────────────────────────────────────────────────
 
-The promise of deploying Large Language Models (LLMs) as automated information extraction (IE) engines rests on a critical assumption: that outputs are \emph{reliable} across repeated executions. In practice, this assumption breaks down rapidly. Output volatility---wherein the same model, frozen system prompt, and identical input text yields structurally or semantically divergent JSON records on independent runs---is a well-documented challenge for LLM-based pipelines \cite{ji2023survey, atil2024nondeterminism}. This volatility is especially problematic in structured IE settings, where downstream systems (databases, analytics tools, decision dashboards) expect deterministic, canonicalized records.
+% ─── Paragraph 1: The Problem ───
+Consider a production dashboard that ingests LLM-generated country risk assessments every morning. On Monday, the pipeline reports that Mexico's active risk categories are \{\texttt{crime}, \texttt{kidnapping}\}. On Tuesday---same model, same prompt, same underlying advisory and news inputs---it reports \{\texttt{crime}, \texttt{civil\_unrest}, \texttt{other}\}. No ground truth has changed. The model has simply sampled a different output from its distribution. This is \emph{output volatility}: the failure of an LLM to return equivalent structured records across independent runs on identical inputs. The problem is fatal for automated information extraction (IE) pipelines. Analysts, databases, and downstream dashboards cannot distinguish a resampling artifact from a genuine change in the world, which means every alert is suspect and every trend line is potentially noise. As LLMs become the default engine for structured data extraction in domains from financial compliance to medical coding to geopolitical risk, volatility stops being a curiosity and becomes a production liability.
 
-A canonical engineering response to this problem is the \textbf{schema constraint architecture}: rather than accepting free-form LLM output, the output is intercepted by a schema validator. If the response violates a predefined JSON schema---missing keys, hallucinated category values, wrong field types---an auto-retry loop feeds the exact validation error back to the model as corrective feedback \cite{willard2023efficient, beurer2023prompting}. This ``validate-and-retry'' pattern has become a standard production recipe and is marketed by some as a path to near-deterministic structured outputs.
+% ─── Paragraph 2: The Gap ───
+The dominant engineering response is the \emph{schema constraint architecture}: intercept the model's output with a JSON schema validator, and if the response violates the schema, feed the validator's exact error message back to the model as corrective feedback in an auto-retry loop \cite{willard2023efficient, beurer2023prompting}. This ``validate-and-retry'' pattern has become a default production recipe and is frequently marketed as a path to near-deterministic structured output. Prior work on structured output largely endorses this direction. Shrimal et al.\ \cite{shrimal2025parse} report a 92\% reduction in extraction errors using reflection-based retry, and benchmarks such as JSONSchemaBench \cite{geng2025jsonschemabench} measure how reliably models comply with schemas on a single call. What this literature does not measure is the metric that actually matters for production pipelines: whether the same input produces the same output across independent runs. Structural compliance on one run is not the same as consistency across many, and the gap between the two has not been quantified on a realistic, multi-source IE task.
 
-In this paper, we critically evaluate this recipe through a rigorous empirical lens. We build a live, multi-source \textbf{Travel Risk Assessment Pipeline} that ingests unstructured U.S.\ State Department travel advisories alongside real-time news articles, synthesizing them into structured JSON vulnerability reports for 30 countries. The pipeline targets a strict schema with categorical fields (e.g., \texttt{event\_types} drawn from a fixed vocabulary of \{crime, terrorism, civil\_unrest, kidnapping, natural\_disaster, health, conflict, other\}), scalar risk levels (1--4, matching State Department advisory tiers), and free-form string lists (e.g., \texttt{regional\_warnings}).
+% ─── Paragraph 3: The Contribution ───
+This paper quantifies that gap. The contribution is a live, multi-source \textbf{Travel Risk Assessment Pipeline} that synthesizes U.S.\ State Department advisories and real-time news into structured JSON risk reports for 30 countries, paired with a controlled stability evaluation across two model scales (120B-parameter LLM, 8B-parameter SLM) and two conditions (unconstrained baseline vs.\ schema-validated retry). All inputs are cached at session level so that observed variance reflects model stochasticity rather than input drift. Stability is measured as the agreement between structured records produced on independent runs of the same input. The central research question is whether schema validation with retry reduces output volatility by at least 50\%---a principled ``majority contribution'' benchmark under which constraints would be the dominant stabilization mechanism, responsible for more improvement than all remaining sources of variance combined.
 
-We evaluate two language models under this pipeline: a 120B-parameter LLM (\texttt{gpt-oss-\allowbreak 120b}) and an 8B-parameter SLM (\texttt{llama-3.1-\allowbreak 8b}), each run at $T{=}1.0$ (maximum entropy) to aggressively stress-test the stability mechanisms. Both models are evaluated in two conditions: an unconstrained baseline and a constrained condition with schema validation plus retry. Our central research question is:
+% ─── Paragraph 4: Results Preview ───
+The 50\% threshold is robustly rejected. Schema constraints reduce volatility by only 11.9\% for the SLM (statistically significant) and 4.8\% for the LLM (not statistically significant, within sampling noise). More strikingly, the smaller 8B SLM is 26--29\% \emph{more stable} than the 120B LLM across every tested condition---a capacity-consistency tradeoff that inverts the intuition that larger models produce more reliable structured outputs. Retries also consume 30--40\% additional tokens, further eroding the value proposition of structural guardrails. The remaining volatility is dominated by a \emph{canonicalization gap}: semantically equivalent strings (e.g., \texttt{"Arauca"} vs.\ \texttt{"Arauca Department, Colombia"}) that validators cannot collapse but that downstream consumers treat as distinct. Production IE pipelines that require robust consistency cannot rely on schema enforcement alone; semantic grounding must be treated as a first-class component of the reliability architecture.
 
-\begin{quote}
-  \textit{Does applying schema constraints with a validation-guided retry loop reduce LLM output volatility by $\geq$50\% in a real-world structured IE task?}
-\end{quote}
-
-The 50\% threshold is chosen as a principled ``majority contribution'' benchmark: if constraints close at least half the gap between observed stability and perfect reproducibility ($J{=}1.0$), they would constitute the dominant stabilization mechanism---responsible for more improvement than all remaining sources of variance combined.
-
-Our results robustly reject this threshold. Schema constraints reduce volatility by only $\sim$11.9\% for the SLM (statistically significant) and $\sim$4.8\% for the LLM (not statistically significant). More strikingly, the smaller SLM proves significantly more stable than the LLM in all tested conditions---a counterintuitive finding with implications for model selection in production IE contexts. A subsequent cost analysis reveals that retry overhead from constrained generation is non-trivial, further diminishing the value proposition of structural guardrails alone.
-
+% ─── Contributions list (kept separate, follows the 4-paragraph arc) ───
 The core contributions of this paper are:
 \begin{enumerate}
-  \item A reproducible multi-source geopolitical risk IE pipeline with a session-level caching architecture (ensuring identical inputs across runs) and SQLite-backed provenance logging;
-  \item A rigorous, quantitative comparison of constrained vs.\ unconstrained generation across two model scales using Row Jaccard Similarity with bootstrap confidence intervals;
-  \item An empirical analysis of schema constraint efficacy, retry cost, and model-scale interaction effects;
-  \item An identification of the \emph{canonicalization gap}---the class of semantic volatility that purely structural constraints cannot address---along with actionable future directions.
+  \item A reproducible multi-source geopolitical risk IE pipeline with session-level input caching and SQLite-backed provenance logging, enabling controlled stability evaluation.
+  \item A quantitative comparison of constrained vs.\ unconstrained generation across two model scales, using Row Jaccard Similarity with bootstrap confidence intervals.
+  \item Empirical evidence of a \emph{capacity-consistency tradeoff}: smaller models are more stable than larger ones at high temperature in structured IE settings.
+  \item Identification of the \emph{canonicalization gap}---the class of semantic volatility that purely structural constraints cannot address---with concrete engineering directions.
 \end{enumerate}
 
-The remainder of this paper is organized as follows. Section~2 reviews related work on LLM hallucination, constrained decoding, and IE pipelines. Section~3 describes the pipeline architecture and data sources. Section~4 details the experimental design, metrics, and statistical methodology. Section~5 presents the stability results and cost analysis. Section~6 provides an error taxonomy. Section~7 discusses implications and limitations, and Section~8 concludes.
+% ─── Roadmap ───
+The remainder of the paper is organized as follows. Section~\ref{sec:related} reviews related work on LLM hallucination, constrained decoding, and IE pipelines. Section~\ref{sec:architecture} describes the pipeline architecture and data sources. Section~\ref{sec:design} details the experimental design, metrics, and statistical methodology. Section~\ref{sec:results} presents stability results and cost analysis. Section~\ref{sec:error} provides an error taxonomy. Section~\ref{sec:discussion} discusses implications and limitations. Section~\ref{sec:conclusion} concludes.
 
-%% ─────────────────────────────────────────────────────────────────────────────
 \section{Related Work}
-%% ─────────────────────────────────────────────────────────────────────────────
+\label{sec:related}
 
-\subsection{Hallucination and Output Volatility in LLMs}
-The unreliability of LLM outputs has been extensively studied through the lens of hallucination---the generation of factually incorrect or fabricated content \cite{ji2023survey}. While hallucination research has traditionally focused on factual accuracy, a closely related failure mode is \emph{structural volatility}: inconsistency in the form, completeness, and categorical choices of outputs across repeated inferences. Song et al.\ \cite{song2024good} demonstrate that LLM evaluation benchmarks that report a single output per example systematically understate true performance variance, arguing that non-determinism must be treated as a first-class concern in model evaluation. Atil et al.\ \cite{atil2024nondeterminism} further show that even supposedly ``deterministic'' settings ($T{=}0$, fixed seeds) fail to guarantee identical outputs at scale due to floating-point non-associativity in parallel computation across GPUs---a finding with direct implications for any production pipeline.
+This work sits at the intersection of three research threads: non-determinism and volatility in LLM outputs, structural enforcement of generated content, and LLM-based information extraction. Each thread has produced useful findings, but none has directly measured whether the dominant production technique---schema validation with error-feedback retry---meaningfully reduces cross-run output volatility in a realistic IE task. This paper fills that measurement gap.
 
-Camuffo et al.\ \cite{camuffo2025variance} characterize five distinct sources of variance in LLM-based annotation tasks, demonstrating that minor choices in prompt phrasing and model selection can shift annotation outcomes by 12--85 percentage points. This extreme sensitivity motivates the engineering of structural guardrails, which our work empirically evaluates.
+\subsection{Non-Determinism and Output Volatility}
 
-\subsection{Constrained Decoding and Schema Enforcement}
-Two broad strategies exist for enforcing structured output from LLMs: \emph{proactive} (constrained decoding during generation) and \emph{retroactive} (post-hoc validation with retry). In proactive constrained decoding, the model's token logits are masked at each generation step to guarantee that the output conforms to a grammar or schema \cite{willard2023efficient}. Query languages like LMQL formalize this as a programming paradigm, treating prompt constraints as executable specifications \cite{beurer2023prompting}. Geng et al.\ \cite{geng2025jsonschemabench} benchmark constrained decoding engines against the JSONSchemaBench suite, finding significant compliance rate differences between systems and exposing compilation-time pathologies in grammar-based approaches.
+LLM unreliability has been studied most extensively through the lens of hallucination---the generation of factually incorrect or fabricated content \cite{ji2023survey}. A related but distinct failure mode has received less attention: \emph{structural volatility}, or inconsistency in the form and categorical choices of outputs across repeated inferences on identical inputs.
 
-However, constrained decoding has a fundamental limitation: it guarantees syntactic validity but not semantic correctness. Tam et al.\ \cite{tam2024let} demonstrate that format restrictions can actually \emph{degrade} LLM task performance by forcing the model away from its highest-probability natural language completions toward lower-confidence structured alternatives---a finding directly relevant to our temperature-$1.0$ experimental setting. Deutsch et al.\ \cite{deutsch2025constrained} extend this analysis to 11 models, finding that instruction-tuned models frequently suffer performance degradation under constraints while base models often benefit---suggesting a complex interaction between alignment and structural enforcement.
+Two recent findings motivate this paper directly. Song et al.\ \cite{song2024good} demonstrate that evaluation benchmarks reporting a single output per example systematically understate true performance variance, and argue that non-determinism must be treated as a first-class concern. Atil et al.\ \cite{atil2024nondeterminism} extend the concern to supposedly deterministic settings: $T{=}0$ generation with fixed seeds still fails to guarantee identical outputs at scale, because floating-point non-associativity in parallel GPU computation introduces irreducible noise. Together, these results establish that volatility is real and cannot be eliminated by configuration alone---which is precisely why schema-level stabilization mechanisms have become the default production response. Camuffo et al.\ \cite{camuffo2025variance} add a related diagnosis: prompt phrasing and model selection can shift annotation outcomes by 12--85 percentage points, placing a large residual burden on post-generation guardrails.
 
-Our work differs from the above in that we evaluate the more common \emph{retroactive} approach: schema validation with error-feedback retry, rather than constrained decoding. Shrimal et al.\ \cite{shrimal2025parse} propose PARSE, a system that combines reflection-based extraction with LLM-based guardrails, reporting a 92\% reduction in extraction errors within the first retry---though this is measured in terms of structural compliance rather than output consistency across runs, which is our primary metric.
+These papers establish the problem. None evaluates whether schema-level guardrails actually solve it. This paper provides that evaluation.
+
+\subsection{Structural Enforcement: Proactive and Retroactive}
+
+Two broad strategies exist for enforcing structured output from LLMs. \emph{Proactive} approaches intervene during generation, masking token logits at each step to guarantee grammar or schema conformance \cite{willard2023efficient}. Query languages such as LMQL formalize this as a programming paradigm \cite{beurer2023prompting}, and Geng et al.\ \cite{geng2025jsonschemabench} benchmark compliance rates across constrained decoding engines. These approaches guarantee syntactic validity but not semantic correctness---and Tam et al.\ \cite{tam2024let} show that format restrictions can actively \emph{degrade} task performance by forcing the model away from its highest-probability natural language completions. Deutsch et al.\ \cite{deutsch2025constrained} extend this finding across 11 models, observing that instruction-tuned models suffer more than base models under constraints.
+
+\emph{Retroactive} approaches---schema validation with error-feedback retry---are more common in production but less studied empirically. The closest prior work is Shrimal et al.\ \cite{shrimal2025parse}, whose PARSE system reports a 92\% reduction in extraction errors within the first retry. The metric in that work is structural compliance on a single run. This paper evaluates the less-studied but arguably more important question: whether validation-and-retry improves output \emph{consistency across independent runs} on identical inputs. The distinction matters because single-run compliance can be high while cross-run consistency remains low---exactly the situation this paper's results document.
 
 \subsection{Information Extraction with LLMs}
-LLMs have become the dominant paradigm for universal information extraction (UIE), replacing earlier rule-based and supervised approaches \cite{li2024simple}. Liu et al.\ \cite{liu2024we} identify 134 distinct use cases for output constraints in LLM applications, categorized into low-level (format/length) and high-level (semantic/stylistic) requirements, concluding that addressing only structural constraints leaves a large residual of semantic violations unhandled. This observation directly motivates our investigation of the canonicalization gap. Wang et al.\ \cite{wang2022self} propose Self-Consistency---aggregating multiple sampled outputs via majority vote---as an alternative to structural enforcement for improving output reliability, though this approach multiplies inference cost proportionally with the number of samples.
+
+LLMs have become the dominant paradigm for universal information extraction (UIE), replacing earlier rule-based and supervised approaches \cite{li2024simple}. Two findings from this literature shape the present work. Liu et al.\ \cite{liu2024we} identify 134 use cases for output constraints in LLM applications and categorize them into low-level (format, length) and high-level (semantic, stylistic) requirements, concluding that addressing only structural constraints leaves a large residual of semantic violations unhandled. This observation directly motivates the canonicalization gap analyzed in Section~\ref{sec:error}. Wang et al.\ \cite{wang2022self} propose Self-Consistency, aggregating multiple sampled outputs via majority vote as an alternative to structural enforcement; the approach improves reliability but multiplies inference cost linearly with sample count, making it impractical for high-throughput production settings. The pipeline evaluated here targets the opposite regime: single-inference-per-input, where structural guardrails are the only available stabilization mechanism.
 
 \subsection{Geopolitical Risk and NLP Pipelines}
-NLP-based geopolitical risk assessment has received growing attention, with prior work constructing indices from news articles using sentiment analysis and named entity recognition \cite{ji2023survey}. However, these systems typically target time-series indices rather than structured, per-country risk schemas. Our pipeline is distinct in combining live multi-source ingestion (state advisories + news) with a strict categorical schema and per-run consistency evaluation, making it a harder and more practically relevant testbed for output stability.
 
-%% ─────────────────────────────────────────────────────────────────────────────
+NLP-based geopolitical risk assessment has received growing attention, typically producing time-series indices from news articles via sentiment analysis and named entity recognition \cite{caldara2022measuring}. These systems target aggregate signals rather than structured, per-country risk schemas. The pipeline presented here is distinct in three respects: it combines live multi-source ingestion (state advisories plus news), it targets a strict categorical schema, and it evaluates per-run consistency as a first-class metric. Together these choices make it a harder and more practically relevant testbed for LLM output stability than prior geopolitical NLP work.
+
 \section{System Architecture and Data Pipeline}
-%% ─────────────────────────────────────────────────────────────────────────────
+\label{sec:architecture}
+
+The pipeline is designed around a single experimental constraint: all observed output variation must reflect model stochasticity, not input drift. This section describes how data sources, caching, schema enforcement, and logging are composed to meet that constraint.
 
 \subsection{Data Sources and Ingestion}
 
-Our pipeline operates over two complementary data sources:
+The pipeline operates over two complementary data sources:
 
 \begin{enumerate}
-  \item \textbf{U.S.\ State Department Travel Advisories}: Official country-level risk assessments, providing structured but verbose prose on security conditions, criminal activity, natural hazards, and regional restrictions. Advisories are fetched and cached via an MCP (Model Context Protocol) server to avoid redundant API calls and ensure experimental reproducibility across runs.
+  \item \textbf{U.S.\ State Department Travel Advisories.} Official country-level risk assessments written as verbose prose covering security conditions, criminal activity, natural hazards, and regional restrictions. Advisories are fetched and cached via a Model Context Protocol (MCP) server to avoid redundant API calls and guarantee reproducibility across runs.
 
-  \item \textbf{Real-Time News Articles}: Recent geopolitical and security-relevant news articles retrieved via a news API, filtered per country. News provides time-sensitive context not captured in the relatively static advisory prose. News data is also cached at the session level to hold input constant across experimental conditions.
+  \item \textbf{Real-Time News Articles.} Recent geopolitical and security-relevant articles retrieved via a news API and filtered per country. News provides time-sensitive context not captured in the relatively static advisory prose. News data is also cached at the session level.
 \end{enumerate}
 
-The caching architecture is critical to experimental validity: it guarantees that observed output variation between runs reflects model-side stochasticity rather than input drift from changing news feeds.
+Caching is load-bearing for the experiment. Without it, identical prompts issued on different days would see different news contexts, and any cross-run variation could be attributed to feed drift rather than model behavior. Session-level caching freezes both sources at the start of each experimental run and holds them constant across all 600 inference calls, guaranteeing that the only variable between runs is the model's sampling process.
 
 \subsection{Target JSON Schema}
 
-The pipeline synthesizes both sources into a structured JSON record conforming to a strict schema. Key fields include:
+Both sources are synthesized into a single structured JSON record conforming to a strict schema. The fields relevant to the stability evaluation are:
 
 \begin{itemize}
   \item \texttt{country} (string): ISO country identifier.
   \item \texttt{risk\_level} (integer, 1--4): State Department advisory level, from Level~1 (Exercise Normal Precautions) to Level~4 (Do Not Travel).
-  \item \texttt{event\_types} (array of enum): Categorical risk flags drawn from the fixed vocabulary \{\texttt{crime}, \texttt{terrorism}, \texttt{civil\_unrest}, \texttt{kidnapping}, \texttt{natural\_disaster}, \texttt{health}, \texttt{conflict}, \texttt{other}\}.
+  \item \texttt{event\_types} (array of enum): Categorical risk flags drawn from a fixed vocabulary of \{\texttt{crime}, \texttt{terrorism}, \texttt{civil\_unrest}, \texttt{kidnapping}, \texttt{natural\_disaster}, \texttt{health}, \texttt{conflict}, \texttt{other}\}.
   \item \texttt{regional\_warnings} (array of strings): Free-form named regions or areas with elevated risk.
   \item \texttt{summary} (string): Brief prose synthesis.
 \end{itemize}
 
-The \texttt{event\_types} field is the primary locus of structural volatility measurement, as it is both categorically constrained (finite vocabulary) and highly sensitive to model interpretation (different models may classify ``cartel activity'' as \texttt{crime} or \texttt{terrorism} depending on context). The \texttt{regional\_warnings} field is the primary locus of \emph{semantic} volatility, as it accepts free-form strings.
+The schema deliberately combines two types of fields with different volatility profiles. The \texttt{event\_types} field is categorically constrained: a finite enum, validator-enforceable, and the primary locus of \emph{structural} volatility. The \texttt{regional\_warnings} field accepts free-form strings and is the primary locus of \emph{semantic} volatility---the class of inconsistency that schema validators cannot detect. Evaluating both fields within a single record allows the experiment to measure where structural enforcement succeeds and where it reaches its limits.
 
 \subsection{Pipeline Components}
 
@@ -157,72 +163,106 @@ The \texttt{event\_types} field is the primary locus of structural volatility me
 
 \end{tikzpicture}%
 }
-\caption{Pipeline architecture. Both sources are cached to hold input constant across runs. Validation errors in the constrained condition are serialized and appended to the model context as corrective feedback before retry.}
+\caption{Pipeline architecture. Cached inputs hold both data sources constant across runs. In the constrained condition, validation errors are appended to the model context as corrective feedback and the generation is retried. In the unconstrained condition, the validator is bypassed and raw outputs are logged directly.}
 \label{fig:architecture}
 \end{figure}
 
-All inference outputs---valid, structurally invalid, and semantically aberrant---are persisted to a SQLite database with full provenance metadata (model, condition, country, run index, timestamp, raw response). This logging architecture enables post-hoc metric computation and error analysis across any subset of runs.
+Figure~\ref{fig:architecture} shows the end-to-end flow. The prompt builder composes the cached advisory, cached news, and a frozen system prompt into a single input. The LLM generates a response at $T{=}1.0$. In the constrained condition, the response passes through a strict JSON Schema validator; validation failures trigger a retry with the error message appended as corrective feedback. In the unconstrained condition, the validator is bypassed and the raw output is stored directly. All outputs---valid, structurally invalid, and semantically aberrant---are persisted to a SQLite database with full provenance metadata (model, condition, country, run index, timestamp, raw response). This logging architecture enables post-hoc metric computation and error analysis across any subset of runs without requiring re-inference.
 
 \subsection{Prompt Design}
 
-The system prompt is frozen and identical across all runs for a given model. It instructs the model to:\ (1) synthesize the advisory and news content for the target country, (2) return a JSON object conforming to the schema exactly, and (3) use only the specified vocabulary for \texttt{event\_types}. The constrained condition's retry prompt appends the literal validator error message---e.g., \texttt{"invalid value 'cartel\_violence' in event\_types; valid options: [crime, terrorism, civil\_unrest, kidnapping, natural\_disaster, health, conflict, other]"}---along with the original prompt and a regeneration instruction.
-
+The system prompt is frozen and identical across all runs for a given model. It instructs the model to: (1) synthesize the advisory and news content for the target country; (2) return a JSON object conforming to the schema exactly; and (3) use only the specified vocabulary for \texttt{event\_types}. In the constrained condition, the retry prompt appends the literal validator error---for example, \texttt{"invalid value 'cartel\_violence' in event\_types; valid options: [crime, terrorism, civil\_unrest, kidnapping, natural\_disaster, health, conflict, other]"}---together with the original prompt and a regeneration instruction. This design ensures that the retry mechanism communicates both the constraint and the specific violation, giving the model the maximum possible information to self-correct.
 %% ─────────────────────────────────────────────────────────────────────────────
 \section{Experimental Design}
-%% ─────────────────────────────────────────────────────────────────────────────
+\label{sec:design}
 
 \subsection{Models and Configuration}
 
-We evaluate two models representing substantially different scales:
+Two models representing substantially different scales are evaluated:
 
 \begin{itemize}
-  \item \textbf{\texttt{gpt-oss-\allowbreak 120b}} (LLM): OpenAI's open-source 120B-parameter instruction-tuned model, accessed via the University of Florida HiPerGator AI API endpoint.\footnote{\url{https://api.ai.it.ufl.edu/v1}} This model represents the high-end of commercially available API models.
-  \item \textbf{\texttt{llama-3.1-\allowbreak 8b}} (SLM): Meta's Llama 3.1 8B-parameter open-weight instruction-tuned model, also accessed via the HiPerGator API. This represents the class of efficient, deployable models.
+  \item \textbf{\texttt{gpt-oss-\allowbreak 120b}} (LLM): OpenAI's open-source 120B-parameter instruction-tuned model, accessed via the University of Florida HiPerGator AI API endpoint.\footnote{\url{https://api.ai.it.ufl.edu/v1}} This model represents the high end of commercially available API models.
+  \item \textbf{\texttt{llama-3.1-\allowbreak 8b}} (SLM): Meta's Llama 3.1 8B-parameter open-weight instruction-tuned model, also accessed via the HiPerGator API. This represents the class of efficient, production-deployable models.
 \end{itemize}
 
-Both models are configured with $T{=}1.0$ to maximize output entropy. This is a deliberate experimental choice: we want to stress-test the stabilization mechanisms at their logical limits, not demonstrate that low-temperature generation is consistent (which is trivially true \cite{atil2024nondeterminism}). All other generation parameters (\texttt{top\_p}, \texttt{max\_tokens}) are fixed identically across conditions.
+Both models are configured at $T{=}1.0$ to maximize output entropy. The choice is deliberate. The goal is to stress-test stabilization mechanisms at their logical limits, not to demonstrate the trivial result that low-temperature generation is more consistent \cite{atil2024nondeterminism}. All other generation parameters (\texttt{top\_p}, \texttt{max\_tokens}) are fixed identically across conditions to isolate the effect of schema enforcement.
 
 \subsection{Experimental Conditions}
 
-We define two conditions applied to both models:
+Two conditions are applied to both models:
 
 \begin{enumerate}
-  \item \textbf{Unconstrained (Baseline)}: The model generates a response directly from the prompt. The output is parsed as JSON for storage and metric computation, but \emph{no} validation or retry is applied. If the output is structurally malformed, it is logged as-is.
-
-  \item \textbf{Constrained}: The output is passed through a strict JSON Schema validator. If validation fails (missing keys, wrong types, hallucinated enum values), the validator serializes the specific error(s) and triggers a retry by appending the error feedback to the conversation context. This loop continues until the output passes validation or a maximum of 3 retry attempts is exhausted.
+  \item \textbf{Unconstrained (Baseline).} The model generates a response directly from the prompt. The output is parsed as JSON for storage and metric computation, but no validation or retry is applied. Structurally malformed outputs are logged as-is.
+  \item \textbf{Constrained.} The output is passed through a strict JSON Schema validator. If validation fails---missing keys, wrong types, or hallucinated enum values---the validator serializes the specific error and triggers a retry. The error message is appended to the conversation context as corrective feedback. The loop continues until the output passes validation or a maximum of 3 retry attempts is exhausted.
 \end{enumerate}
 
 \subsection{Evaluation Scope}
 
-The experiment covers \textbf{30 target countries} spanning all major geographic regions and advisory risk tiers (Level 1: Exercise Normal Precautions through Level 4: Do Not Travel). We generate \textbf{5 independent runs} per country per condition per model, yielding $5 \times 2 \times 2 \times 30 = 600$ baseline inference calls (plus additional retry calls in the constrained condition). The country set was fixed prior to any data collection to avoid selection bias.
+The experiment covers \textbf{30 target countries} spanning all major geographic regions and advisory risk tiers (Level 1: Exercise Normal Precautions through Level 4: Do Not Travel). The country set was fixed prior to any data collection to avoid selection bias. Five independent runs are generated per country per condition per model, yielding $5 \times 2 \times 2 \times 30 = 600$ baseline inference calls plus additional retry calls in the constrained condition.
 
 \subsection{Evaluation Metric: Row Jaccard Similarity}
 
-Our primary metric is the \textbf{Row Jaccard Similarity}, defined for a pair of output records $(A, B)$ as:
+The primary metric is the \textbf{Row Jaccard Similarity}, which measures the overlap between two structured records on a scale from 0 (no shared content) to 1 (identical content). Formally, for a pair of output records $(A, B)$:
 
 \[
   J(A, B) = \frac{|S_A \cap S_B|}{|S_A \cup S_B|}
 \]
 
-where $S_A$ and $S_B$ are \emph{typed token sets} constructed from each record. Specifically, for a record $R$, we define $S_R = \{\texttt{event\_type:}v \mid v \in R.\texttt{event\_types}\} \cup \{\texttt{regional\_warning:}v \mid v \in R.\texttt{regional\_warnings}\}$. This formulation captures volatility in both the categorically constrained \texttt{event\_types} field and the free-form \texttt{regional\_warnings} field within a single metric, while the type prefixes prevent spurious collisions between fields. The set intersection-over-union has two key properties: (1) it is invariant to arbitrary list ordering within JSON arrays, so purely cosmetic reorderings do not penalize stability; and (2) it captures both \emph{addition volatility} (the model adds a new token in a subsequent run) and \emph{deletion volatility} (the model drops a token it previously included).
+where $S_A$ and $S_B$ are \emph{typed token sets} constructed from each record. For a record $R$:
+\[
+S_R = \left\{
+  \begin{aligned}
+    &\texttt{event\_type:}v \mid v \in R.\texttt{event\_types} \\
+    &\cup\ \texttt{regional\_warning:}v \mid v \in R.\texttt{regional\_warnings}
+  \end{aligned}
+\right\}
+\]
 
-By including \texttt{regional\_warnings} in the primary metric, the Row Jaccard score reflects both structural volatility (in the enum-constrained \texttt{event\_types}) and semantic volatility (in the free-form geographic strings). This design choice means the metric is deliberately sensitive to the canonicalization failures analyzed in Section~\ref{sec:error}---making it a conservative measure of stability.
+The type prefixes prevent spurious collisions between fields (e.g., a string \texttt{"health"} appearing in both \texttt{event\_types} and \texttt{\texttt{regional\_\allowbreak warnings}} is counted as two distinct tokens). The formulation has two properties that matter for this experiment. First, it is invariant to list ordering within JSON arrays, so purely cosmetic reorderings do not artificially depress stability. Second, it captures both \emph{addition volatility} (the model introduces a new token in a later run) and \emph{deletion volatility} (the model drops a token it previously included), which together characterize the inconsistency that matters for downstream consumers.
 
-For a country with $n$ runs, we compute the Row Jaccard Similarity for all $\binom{n}{2}$ pairwise run comparisons and take the mean as the stability score for that country-condition cell. The overall stability score for a model-condition pair is the mean across all 30 countries.
+\paragraph{Worked example.} Consider two runs for Mexico producing the following records:
 
-\textbf{Excluded scalar fields:} The scalar \texttt{risk\_level} field is excluded because it is passed through from the State Department advisory data and the prompt instructs the model to echo it unchanged---it is not a true LLM-generated output. Its variance does not reflect the kind of categorical structural volatility we aim to measure.
+\smallskip
+\noindent\textbf{Run A:}
+\begin{lstlisting}[basicstyle=\ttfamily\scriptsize, frame=none, backgroundcolor=\color{gray!5}]
+event_types = [crime, kidnapping]
+regional_warnings = ["Tamaulipas"]
+\end{lstlisting}
 
-\textbf{Excluded free-text fields:} The \texttt{advisory\_summary}, \texttt{entry\_exit\_requirements}, \texttt{news\_headlines}, and other prose fields are excluded because exact string equality is an inappropriate standard for free text. These fields are analyzed via secondary metrics (cosine similarity of sentence embeddings) rather than Jaccard.
+\noindent\textbf{Run B:}
+\begin{lstlisting}[basicstyle=\ttfamily\scriptsize, frame=none, backgroundcolor=\color{gray!5}]
+event_types = [crime, civil_unrest]
+regional_warnings = ["Tamaulipas", "Michoacan"]
+\end{lstlisting}
+
+\smallskip
+\noindent The typed token sets are:
+\begin{align*}
+S_A = \{\,&\texttt{event\_type:crime},\ \texttt{event\_type:kidnapping},\\
+         &\texttt{regional\_warning:Tamaulipas}\,\} \\[4pt]
+S_B = \{\,&\texttt{event\_type:crime},\ \texttt{event\_type:civil\_unrest},\\
+         &\texttt{regional\_warning:Tamaulipas},\\
+         &\texttt{regional\_warning:Michoacan}\,\}
+\end{align*}
+
+The intersection has 2 elements, the union has 5, so $J(A, B) = 2/5 = 0.40$. A score of 1.0 would mean the two runs produced identical records; 0.0 would mean they shared no content.
+By combining the categorically constrained \texttt{event\_types} and the free-form \texttt{regional\_warnings} in a single metric, the Row Jaccard score captures both structural and semantic volatility. This makes it a deliberately conservative measure of stability---sensitive to the canonicalization failures analyzed in Section~\ref{sec:error}.
+
+For a country with $n$ runs, the Row Jaccard Similarity is computed for all $\binom{n}{2}$ pairwise run comparisons and averaged to produce a stability score for that country-condition cell. The overall stability score for a model-condition pair is the mean across all 30 countries.
+
+\paragraph{Excluded scalar fields.} The \texttt{risk\_level} field is excluded from the metric because it is passed through from the State Department advisory and the prompt instructs the model to echo it unchanged. Its variance does not reflect the kind of categorical structural volatility this experiment is designed to measure.
+
+\paragraph{Excluded free-text fields.} The \texttt{advisory\_summary}, \texttt{entry\_exit\_\allowbreak requirements}, \texttt{news\_headlines}, and other prose fields are excluded because exact string equality is an inappropriate standard for free text. These fields are analyzed via secondary metrics (cosine similarity of sentence embeddings) rather than Jaccard.
 
 \subsection{Statistical Analysis}
 
-To assess whether observed stability differences are statistically meaningful rather than artifacts of sampling variance, we construct \textbf{95\% Bootstrap Confidence Intervals} (BCIs) for all reported means using $B = 1{,}000$ bootstrap resamples of the country-level stability scores \cite{efron1994introduction}. We report means alongside BCIs throughout. Non-overlapping BCIs provide evidence of a statistically significant difference at the $\approx$5\% level.
+To assess whether observed stability differences are statistically meaningful rather than artifacts of sampling variance, \textbf{95\% Bootstrap Confidence Intervals} (BCIs) are constructed for all reported means using $B = 1{,}000$ bootstrap resamples of the country-level stability scores \cite{efron1994introduction}. A 95\% BCI is a range within which the true population mean is estimated to lie with 95\% probability, given the observed sample. Non-overlapping BCIs between two conditions indicate that the observed difference is unlikely to be due to chance (statistically significant at approximately the 5\% level).
 
-\textbf{Volatility reduction metric.} We define the volatility reduction as the proportion of residual instability that constraints eliminate:
+\paragraph{Volatility reduction metric} The volatility reduction is defined as the proportion of residual instability that schema constraints eliminate:
 \[
   \text{Reduction} = \frac{\bar{J}_{\text{constrained}} - \bar{J}_{\text{unconstrained}}}{1 - \bar{J}_{\text{unconstrained}}}
 \]
-where $\bar{J}$ denotes the mean Row Jaccard Similarity. A value of 50\% indicates that constraints close half the gap between observed baseline stability and perfect reproducibility ($J{=}1.0$). This residual-improvement formulation is more informative than a simple relative change, as it measures progress toward the practical goal of full consistency.
+where $\bar{J}$ denotes the mean Row Jaccard Similarity across all countries. A value of 50\% indicates that constraints close half the gap between observed baseline stability and perfect reproducibility ($J{=}1.0$). This residual-improvement formulation is more informative than a simple relative change: it measures progress toward the practical goal of full consistency, rather than relative change against an arbitrary baseline.
 
 %% ─────────────────────────────────────────────────────────────────────────────
 \section{Evaluation Results}
@@ -335,20 +375,53 @@ This cost-adjusted view reinforces the core finding: schema constraints provide 
 %% ─────────────────────────────────────────────────────────────────────────────
 \section{Error Analysis}
 \label{sec:error}
-%% ─────────────────────────────────────────────────────────────────────────────
 
-\subsection{Taxonomy of Observed Failures}
+Post-hoc inspection of the logged outputs reveals that the observed volatility falls into three qualitatively distinct failure modes. Table~\ref{tab:errortaxonomy} summarizes them and notes which are addressable by schema enforcement. The three subsections that follow expand each mode with concrete examples drawn from the experimental data.
 
-Post-hoc inspection of the logged outputs reveals that output failures cluster into three qualitatively distinct categories:
+\begin{table*}[t]
+\caption{Taxonomy of observed failure modes. Type 1 violations are directly addressable by schema validation with retry; Types 2 and 3 are not.}
+\label{tab:errortaxonomy}
+\small
+\begin{tabular}{p{2.2cm}p{4.5cm}p{2.5cm}p{2.5cm}p{2cm}}
+\toprule
+\textbf{Failure Mode} & \textbf{Description} & \textbf{Example} & \textbf{SLM / LLM Rate} & \textbf{Addressable?} \\
+\midrule
+Type 1: Structural Violation &
+Malformed output the validator can detect: missing keys, hallucinated enum values, wrong field types. &
+\texttt{"cartel\_violence"} in \texttt{event\_types} &
+$\sim$18\% / $\sim$6\% &
+Yes (by retry) \\
+\addlinespace
+Type 2: Categorical Interpretation Variance &
+Structurally valid, but the same input text receives different categorical assignments across runs. &
+``organized crime'' $\to$ \texttt{crime} on one run, \texttt{terrorism} on another &
+Not measured directly &
+Partially (semantic rules) \\
+\addlinespace
+Type 3: Canonicalization Failure &
+Semantically equivalent free-form strings expressed in different surface forms. &
+\texttt{"Arauca"} vs.\ \texttt{"Arauca Department, Colombia"} &
+Dominates residual variance &
+No \\
+\bottomrule
+\end{tabular}
+\end{table*}
 
-\paragraph{Type 1: Structural Violations (addressable by schema constraints).}
-These are malformed outputs that a schema validator can detect and trigger a retry for. Examples include: missing required keys (\texttt{event\_types} array omitted entirely), hallucinated enum values (\texttt{"cartel\_violence"} instead of \texttt{"crime"}), and type mismatches (\texttt{risk\_level} returned as a string instead of integer). These violations are \emph{significantly} more common in llama-3.1-\allowbreak 8b than gpt-oss-\allowbreak 120b, explaining why the SLM benefits more from retry loops. In the SLM's unconstrained condition, $\sim$18\% of generations contained at least one structural violation; for gpt-oss-\allowbreak 120b, this rate was $\sim$6\%.
+\subsection{Type 1: Structural Violations}
 
-\paragraph{Type 2: Categorical Interpretation Variance (partially addressable).}
-Even when outputs are structurally valid, the same underlying text can elicit different categorical assignments across runs. For example, reports of ``organized crime groups'' may trigger \texttt{crime} in one run and \texttt{terrorism} in another, depending on subtle differences in how the model parses the advisory prose at $T{=}1.0$. Schema constraints do not address this form of volatility directly, but retry feedback \emph{can} partially constrain it if the validator encodes semantic rules (e.g., ``cartel violence must map to crime'')---a feature our current implementation does not implement.
+Structural violations are malformed outputs that a JSON schema validator can detect and trigger a retry for. Observed examples include: missing required keys (the \texttt{event\_types} array omitted entirely), hallucinated enum values (\texttt{"cartel\_violence"} instead of one of the eight valid event types), and type mismatches (\texttt{risk\_level} returned as a string instead of an integer).
 
-\paragraph{Type 3: Canonicalization Failures (not addressable by structural constraints).}
-The most pernicious form of volatility affects the \texttt{regional\_warnings} free-form string list. Schema constraints enforce that this field is an array of strings, but they cannot enforce that semantically equivalent strings are represented identically. Across runs, we observe:
+These violations are significantly more common in llama-3.1-\allowbreak 8b than in gpt-oss-\allowbreak 120b. In the SLM's unconstrained condition, approximately 18\% of generations contained at least one structural violation. In the LLM's unconstrained condition, the rate was approximately 6\%. This 3$\times$ gap explains directly why the SLM benefits from retry loops and the LLM does not: the LLM simply produces fewer Type 1 failures for the validator to catch. The residual volatility in the LLM's outputs is therefore concentrated in Types 2 and 3, which schema enforcement cannot address.
+
+\subsection{Type 2: Categorical Interpretation Variance}
+
+Even when outputs are structurally valid, the same underlying advisory text can elicit different categorical assignments across runs. A report of ``organized crime groups operating in border regions'' may be tagged \texttt{crime} in one run and \texttt{terrorism} in another, depending on subtle differences in how the model parses the prose at $T{=}1.0$. Both assignments are defensible interpretations; neither is a schema violation; the validator has no basis to prefer one over the other.
+
+This form of volatility is partially addressable by a more sophisticated retry loop---one that encodes semantic rules (e.g., ``cartel-related activity must map to \texttt{crime}, not \texttt{terrorism}''). The current implementation does not implement such rules, so Type 2 errors pass through the validator untouched. Quantifying their exact rate would require ground-truth category labels for each input, which are not available for this corpus.
+
+\subsection{Type 3: Canonicalization Failures}
+
+The most pernicious form of volatility affects the \texttt{regional\_warnings} free-form string list. Schema constraints enforce that this field is an array of strings, but they cannot enforce that semantically equivalent strings are represented identically. Across runs, the same geographic entity appears under multiple surface forms:
 
 \begin{itemize}
   \item \texttt{"Arauca"} vs.\ \texttt{"Arauca department"} vs.\ \texttt{"Arauca Department, Colombia"}
@@ -356,62 +429,84 @@ The most pernicious form of volatility affects the \texttt{regional\_warnings} f
   \item \texttt{"Northern Border"} vs.\ \texttt{"northern border states"} vs.\ \texttt{"Mexico-US border region"}
 \end{itemize}
 
-These are all references to the same geographic entities, yet a set-based Jaccard comparison treats them as entirely distinct. This canonicalization failure is fundamentally a semantic problem, not a structural one. Resolving it requires downstream entity normalization---either via a named entity linking (NEL) post-processor or via explicit few-shot canonicalization examples in the prompt.
+A human reader recognizes all three variants in each group as references to the same underlying place. A set-based Jaccard comparison does not: it treats \texttt{"Arauca"} and \texttt{"Arauca Department, Colombia"} as entirely distinct tokens, counting each occurrence against stability. This canonicalization failure is fundamentally a semantic problem, not a structural one. Resolving it requires a downstream normalization layer---either a named entity linker (NEL) that maps surface forms to canonical geographic IDs, or few-shot canonicalization examples embedded in the prompt itself. Neither is provided by a schema validator.
 
-\subsection{LLM Wide Confidence Interval Analysis}
+Type 3 failures dominate the residual volatility in both models' outputs and are the primary reason the 50\% hypothesis was rejected. No amount of structural validation reduces them.
 
-A notable characteristic of the gpt-oss-\allowbreak 120b results is its extremely wide BCI: [0.30, 0.62] for unconstrained and [0.33, 0.64] for constrained. This width---spanning 0.32 Jaccard units---is itself a diagnostic finding. The LLM is not uniformly unstable; rather, it exhibits \emph{bimodal} stability behavior. For some countries (typically those with more uniform, well-documented risk profiles), the LLM produces near-identical outputs across all runs. For others (particularly countries with complex, ambiguous risk landscapes), the LLM diverges radically between runs.
+\subsection{Bimodal Stability in the LLM}
 
-Figure~\ref{fig:gpt_percountry} visualizes this dispersion. Countries with well-documented, unambiguous risk profiles (e.g., low-risk countries like NZL or NOR, and high-risk countries with clear advisories like PRK or SYR) tend to cluster at the high-stability end, while countries with complex, multi-faceted risk landscapes (e.g., CHN, MEX, IND) exhibit substantially lower cross-run consistency.  This bimodality indicates that the LLM's output distribution is highly sensitive to the specific semantic complexity of the input---a property that structural constraints do nothing to smooth.
+A striking characteristic of the gpt-oss-\allowbreak 120b results is the width of its 95\% bootstrap confidence interval: [0.30, 0.62] unconstrained and [0.33, 0.64] constrained. This 0.32-unit spread is itself a diagnostic finding. The LLM is not uniformly unstable. It exhibits \emph{bimodal} stability behavior: near-identical outputs on some countries, radically divergent outputs on others.
 
 \begin{figure}[h]
 \centering
 \includegraphics[width=\columnwidth]{figures/gpt_per_country.png}
-\caption{Per-country mean Row Jaccard Similarity for gpt-oss-\allowbreak 120b (unconstrained vs.\ constrained). The wide spread across countries---from near-zero to near-perfect stability---explains the wide aggregate bootstrap CIs and reveals input-dependent bimodality in the LLM's output consistency.}
+\caption{Per-country mean Row Jaccard Similarity for gpt-oss-\allowbreak 120b (unconstrained vs.\ constrained). The spread from near-zero to near-perfect stability reveals input-dependent bimodality that structural constraints do not smooth.}
 \label{fig:gpt_percountry}
 \end{figure}
 
+Figure~\ref{fig:gpt_percountry} visualizes this dispersion. Countries with well-documented, unambiguous risk profiles cluster at the high-stability end---both low-risk countries with short advisories (NZL, NOR) and high-risk countries with clear, narrow advisories (PRK, SYR). Countries with complex, multi-faceted risk landscapes (CHN, MEX, IND) fall at the low-stability end, where the LLM diverges substantially between runs.
+
+The pattern suggests that the LLM's output distribution is highly sensitive to the semantic complexity of the input. Simple inputs produce tight, reproducible output distributions; complex inputs produce flat, high-entropy distributions that no amount of structural validation can narrow. This is precisely the capacity-consistency tradeoff identified in Section~\ref{sec:results}, visible at the per-country level. The SLM does not exhibit the same bimodality because its narrower output distribution produces more uniform behavior across input complexity levels.
 %% ─────────────────────────────────────────────────────────────────────────────
 \section{Discussion}
-%% ─────────────────────────────────────────────────────────────────────────────
+\label{sec:discussion}
 
 \subsection{Why the 50\% Hypothesis Failed}
 
-Our 50\% hypothesis was motivated by the intuition that a tight structural feedback loop would dramatically narrow the model's effective output space. This intuition was partially correct but fundamentally incomplete. Schema constraints do narrow the \emph{structural} output space---they eliminate Type 1 failures reliably. But the dominant source of output volatility at $T{=}1.0$ is not structural: it is the semantic variance in how the model reads, interprets, and synthesizes the input text into categorical and free-form outputs. Structural validators are blind to this variance by design.
+The 50\% hypothesis was motivated by the intuition that a tight structural feedback loop would dramatically narrow the model's effective output space. This intuition was partially correct but fundamentally incomplete. Schema constraints do narrow the \emph{structural} output space: they eliminate Type 1 failures reliably and catch the malformed JSON that would otherwise break downstream systems. What they cannot narrow is the \emph{semantic} output space---the variance in how the model reads, interprets, and synthesizes input text into categorical and free-form outputs. At $T{=}1.0$, semantic variance dominates. Structural validators are blind to it by design.
 
-The finding is consistent with Tam et al.\ \cite{tam2024let}, who argue that the fundamental bottleneck in structured IE is semantic alignment, not syntactic compliance. Liu et al.\ \cite{liu2024we} similarly distinguish between ``low-level'' constraints (format, structure) and ``high-level'' constraints (semantics, style), noting that practitioners overwhelmingly need both but existing tooling predominantly addresses the former.
+The finding is consistent with Tam et al.\ \cite{tam2024let}, who argue that the fundamental bottleneck in structured IE is semantic alignment rather than syntactic compliance. Liu et al.\ \cite{liu2024we} similarly distinguish between ``low-level'' constraints (format, structure) and ``high-level'' constraints (semantics, style), noting that practitioners overwhelmingly need both but existing tooling predominantly addresses the former. The results in this paper give that distinction a concrete empirical magnitude: on a realistic IE task, the high-level gap is roughly $4\times$ larger than the low-level gap that schema validation can close.
 
 \subsection{Implications for Production IE Pipelines}
 
-Our results carry several practical implications:
+The results translate into four concrete recommendations for teams building production information extraction systems.
 
-\begin{enumerate}
-  \item \textbf{Schema constraints are necessary but insufficient.} They should remain in production pipelines as a sanity check that eliminates structural failures, but engineers should not rely on them as the primary mechanism for achieving output consistency.
+\paragraph{Schema constraints are necessary but insufficient.}
+They should remain in production pipelines as a sanity check that eliminates Type 1 structural failures. They should not be relied on as the primary mechanism for achieving output consistency.
+\textbf{What to do next:} Keep the schema validator. Add a separate stability monitor that compares outputs across independent runs for a subset of inputs, so drift in semantic consistency is detectable even when structural validation continues to pass.
 
-  \item \textbf{Model selection matters more than constraint architecture.} The SLM-vs-LLM stability gap is larger than the constrained-vs-unconstrained gap within either model. For stability-critical pipelines, a smaller, more constrained model may be preferable to a larger, more expressive one---and is also cheaper to operate.
+\paragraph{Model selection matters more than constraint architecture.}
+The SLM-vs-LLM stability gap (26--29\%) is larger than the constrained-vs-unconstrained gap within either model (at most 11.9\%). For stability-critical pipelines, a smaller, more predictable model may be preferable to a larger, more expressive one---and is also substantially cheaper to operate.
+\textbf{What to do next:} Before investing engineering effort in retry loops, benchmark candidate models on cross-run consistency for the target schema. The choice of model is likely to have higher leverage than the choice of enforcement strategy.
 
-  \item \textbf{Canonicalization is a first-class engineering concern.} A post-generation entity normalization layer (e.g., a fuzzy string matcher or named-entity linker for geographic terms) would address the majority of residual semantic variance in the \texttt{regional\_warnings} field.
+\paragraph{Canonicalization is a first-class engineering concern.}
+Residual semantic volatility in free-form fields (e.g., \texttt{regional\_warnings}) is driven by surface-form variation rather than by structural failure. No schema validator can address this.
+\textbf{What to do next:} Add a post-generation entity normalization layer. For geographic terms, a named entity linker backed by a canonical gazetteer (GeoNames, Wikidata) collapses surface variants into stable identifiers. For domain-specific entities, a fuzzy string matcher against a controlled vocabulary is a lighter-weight alternative.
 
-  \item \textbf{Temperature matters fundamentally.} Our $T{=}1.0$ experiments are a deliberate stress test; production pipelines should use lower temperatures (e.g., $T{=}0.3$--$0.5$) for structured IE tasks. However, even at $T{=}0$, full determinism is not guaranteed for large models on distributed hardware \cite{atil2024nondeterminism, yuan2025numerical}.
-\end{enumerate}
+\paragraph{Temperature settings require calibration, not defaults.}
+The $T{=}1.0$ setting used here is a deliberate stress test. Production pipelines should use lower temperatures (e.g., $T{=}0.3$--$0.5$) for structured IE tasks. However, even at $T{=}0$ full determinism is not guaranteed for large models on distributed hardware \cite{atil2024nondeterminism, yuan2025numerical}.
+\textbf{What to do next:} Treat temperature as a tunable parameter with measurable consequences on cross-run consistency. Sweep a small range and report stability at each setting rather than adopting a default.
 
-\subsection{Limitations}
+\subsection{Limitations and Future Work}
 
-Our study has several limitations. First, we evaluate a single real-world task domain (geopolitical risk); generalizability to other IE schemas requires further work. Second, our ``cost analysis'' estimates token overhead from retry counts but does not measure wall-clock latency, which depends on API infrastructure and is not directly controlled. Third, we do not evaluate proactive constrained decoding (e.g., via grammar-constrained logit masking), which may achieve higher stability at comparable cost by preventing structural violations before they occur rather than correcting them retroactively. Comparing retroactive and proactive approaches head-to-head is a direct avenue for future work.
+Three limitations bound the scope of the conclusions drawn here, and each points to a concrete direction for follow-up work.
+
+\paragraph{Single task domain.} The evaluation covers one real-world task (geopolitical travel risk) with one strict schema. Generalizing the findings to other IE domains---financial compliance extraction, clinical coding, legal contract parsing---would require replicating the constrained-vs-unconstrained comparison on those schemas. The capacity-consistency tradeoff in particular may behave differently when the target schema has a larger categorical vocabulary or more hierarchical structure. \emph{Future direction:} a cross-domain stability benchmark that applies the Row Jaccard methodology to at least three structurally distinct IE schemas.
+
+\paragraph{Retroactive constraints only.} This paper evaluates schema validation with error-feedback retry. Proactive constrained decoding (grammar-constrained logit masking) may achieve higher stability at comparable cost by preventing structural violations at generation time rather than correcting them retroactively. The two approaches have not been compared head-to-head on cross-run consistency. \emph{Future direction:} a controlled comparison of retroactive retry vs.\ proactive constrained decoding on the same pipeline, measuring both stability gain and end-to-end latency.
+
+\paragraph{Token cost, not wall-clock latency.} The cost analysis in Section~\ref{sec:cost} estimates token overhead from retry counts but does not measure wall-clock latency, which depends on API infrastructure (batching, caching, concurrency) outside the experimental control of this study. A production team evaluating whether to deploy retry loops needs both numbers, not just tokens. \emph{Future direction:} instrument the pipeline with wall-clock timing under realistic concurrency loads and report latency distributions alongside token costs.
 
 %% ─────────────────────────────────────────────────────────────────────────────
 \section{Conclusion}
-%% ─────────────────────────────────────────────────────────────────────────────
+\label{sec:conclusion}
 
-We presented an empirical evaluation of schema constraint architectures for reducing output volatility in LLM-based structured information extraction, applied to a live geopolitical travel risk assessment pipeline across 30 countries. Our central finding is that schema constraints with validation-guided retry loops provide a consistent but modest stability improvement ($\sim$5--12\%), far short of the 50\% threshold required for reliable production deployment.
+This paper evaluated whether schema validation with error-feedback retry---the default engineering response to LLM output volatility---meaningfully reduces cross-run inconsistency in a realistic structured information extraction pipeline. The evaluation was conducted on a live Travel Risk Assessment Pipeline spanning 30 countries, two model scales, and two experimental conditions, with all inputs cached to isolate model stochasticity from input drift.
 
-Three findings stand out as particularly significant. First, a smaller 8B SLM is substantially more stable than a 120B LLM across all conditions, suggesting that model scale and output consistency have an inverse relationship at high temperature in structured IE settings. Second, schema constraints benefit the SLM $\approx2.5\times$ more than the LLM, because the SLM has more structural violations for the retry loop to correct---while the LLM's residual volatility is predominantly semantic. Third, canonicalization failure in free-form fields represents an irreducible semantic gap that purely structural enforcement cannot close.
+Three findings define the contribution:
 
-Future work should explore three directions: (1) \textbf{semantic normalizers}---post-processing layers (entity linking, canonicalization maps) that collapse semantically equivalent strings into a standard form; (2) \textbf{proactive constrained decoding} via grammar-constrained logit masking as an alternative to retroactive retry; and (3) \textbf{temperature calibration studies} examining how the stability-expressiveness tradeoff changes as temperature decreases toward the non-determinism floor identified by Atil et al.\ \cite{atil2024nondeterminism}. Production IE pipelines that require robust consistency must look beyond structural enforcement and invest in semantic grounding as a first-class component of their reliability architecture.
+\begin{enumerate}
+ \item \textbf{Schema constraints deliver modest stability, not dominant stability.} The 50\% volatility reduction hypothesis was robustly rejected. Constraints produced at most an 11.9\% improvement for the SLM and no statistically significant improvement for the LLM.
 
-\balance
+ \item \textbf{Smaller models are more stable than larger ones at high temperature.} The 8B SLM was 26--29\% more consistent across runs than the 120B LLM in every tested condition---a capacity-consistency tradeoff with direct consequences for model selection in production IE pipelines.
+
+ \item \textbf{The canonicalization gap is the dominant residual.} Semantically equivalent surface forms in free-form fields (\texttt{"Arauca"} vs.\ \texttt{"Arauca Department, Colombia"}) account for most of the volatility that remains after schema enforcement. Structural validators are architecturally incapable of closing this gap.
+\end{enumerate}
+
+The practical implication is narrow and concrete. Schema validation belongs in production IE pipelines as a structural safety net, but teams that require genuine output consistency must invest in semantic grounding---entity linking, canonicalization layers, controlled vocabularies---as a first-class component of their reliability architecture, not as an optional refinement.
 
 \bibliographystyle{ACM-Reference-Format}
 \bibliography{citations}
+
 
 \end{document}
