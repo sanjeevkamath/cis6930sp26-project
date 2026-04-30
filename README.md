@@ -177,7 +177,7 @@ The research paper is in `paper/`. It is written in LaTeX using the ACM template
 
 - `paper/paper.tex` — main manuscript
 - `paper/citations.bib` — bibliography
-- `paper/generate_figures.py` — script to regenerate all figures
+- `regen_bar_chart.py` — script to regenerate all figures (run from repo root)
 - `paper/figures/` — generated PDF/PNG figures
 
 ---

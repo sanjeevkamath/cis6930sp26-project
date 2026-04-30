@@ -38,8 +38,9 @@
 \email{sanjeev.kamath@ufl.edu}
 
 \begin{abstract}
-Production pipelines that deploy Large Language Models (LLMs) as structured data extractors often assume that identical inputs yield identical outputs; however, this assumption does not hold in practice. The same model, given the same prompt and input, can produce JSON records that vary structurally or semantically across runs, a phenomenon termed \emph{output volatility}. A common mitigation strategy is the \emph{validate-and-retry} loop, in which schema-violating outputs are rejected and validator feedback is iteratively provided to the model until compliance is achieved. This work evaluates the effectiveness of this approach. A live Travel Risk Assessment pipeline is constructed to synthesize U.S.\ State Department advisories and real-time news into structured JSON risk reports for 30 countries. An unconstrained baseline is compared against a schema-validated retry condition across two model scales: a 120B-parameter LLM (\texttt{gpt-oss-\allowbreak 120b}) and an 8B-parameter Small Language Model (SLM, \texttt{llama-3.1-\allowbreak 8b}), both evaluated at temperature $T{=}1.0$. The hypothesis that schema constraints reduce volatility by at least 50\% is rejected. Constraints yield an 11.9\% stability improvement for the SLM (statistically significant) and 4.8\% for the LLM (not significant). Additionally, the 8B SLM demonstrates 26--29\% greater stability than the 120B LLM across all conditions, suggesting a capacity-consistency tradeoff. Retry mechanisms incur a 30--40\% increase in token usage, further diminishing their effectiveness. These results indicate that structural validation alone is insufficient for achieving production-grade consistency, and that semantic canonicalization remains a critical unresolved challenge.
+Production pipelines using Large Language Models (LLMs) for structured extraction often assume output determinism, yet "output volatility" across identical runs remains a persistent challenge. This study evaluates the "validate-and-retry" strategy, where schema-violating outputs are iteratively rejected until compliance is reached. Using a Travel Risk Assessment pipeline across 30 countries, we compare a 120B LLM (\texttt{gpt-oss-\allowbreak 120b}) and an 8B SLM (\texttt{llama-3.1-\allowbreak 8b}) at T=1.0. The hypothesis that constraints reduce volatility by 50\% is rejected for both models: constraints yield an 11.9\% stability gain for the SLM (statistically significant) and 6.3\% for the LLM (not significant). This benefit scales inversely with model size; the SLM gains roughly 1.9× more than the LLM because it produces more structural errors for the validator to catch, whereas the larger model is more natively compliant. Furthermore, retry mechanisms increase token costs by 30 to 40\%. The dominant residual is a "canonicalization gap," defined as semantically equivalent surface forms that structural validators cannot collapse. We conclude that structural validation alone is insufficient for production-grade consistency and that semantic canonicalization must be a first-class component of the reliability architecture.
 \end{abstract}
+
 \maketitle
 \acmConference{CIS 6930}{Spring 2026}{University of Florida}
 
@@ -55,17 +56,16 @@ The dominant engineering response is the \emph{schema constraint architecture}: 
 This paper quantifies that gap. The contribution is a live, multi-source \textbf{Travel Risk Assessment Pipeline} that synthesizes U.S.\ State Department advisories and real-time news into structured JSON risk reports for 30 countries, paired with a controlled stability evaluation across two model scales (120B-parameter LLM, 8B-parameter SLM) and two conditions (unconstrained baseline vs.\ schema-validated retry). All inputs are cached at session level so that observed variance reflects model stochasticity rather than input drift. Stability is measured as the agreement between structured records produced on independent runs of the same input. The central research question is whether schema validation with retry reduces output volatility by at least 50\%---a principled ``majority contribution'' benchmark under which constraints would be the dominant stabilization mechanism, responsible for more improvement than all remaining sources of variance combined.
 
 % ─── Paragraph 4: Results Preview ───
-The 50\% threshold is robustly rejected. Schema constraints reduce volatility by only 11.9\% for the SLM (statistically significant) and 4.8\% for the LLM (not statistically significant, within sampling noise). More strikingly, the smaller 8B SLM is 26--29\% \emph{more stable} than the 120B LLM across every tested condition---a capacity-consistency tradeoff that inverts the intuition that larger models produce more reliable structured outputs. Retries also consume 30--40\% additional tokens, further eroding the value proposition of structural guardrails. The remaining volatility is dominated by a \emph{canonicalization gap}: semantically equivalent strings (e.g., \texttt{"Arauca"} vs.\ \texttt{"Arauca Department, Colombia"}) that validators cannot collapse but that downstream consumers treat as distinct. Production IE pipelines that require robust consistency cannot rely on schema enforcement alone; semantic grounding must be treated as a first-class component of the reliability architecture.
+The 50\% threshold is robustly rejected at both model scales. Schema constraints reduce volatility by only 11.9\% for the SLM (statistically significant) and 6.3\% for the LLM (not statistically significant, within sampling noise). The constraint benefit is itself uneven: the SLM benefits roughly $1.9\times$ more from schema enforcement than the LLM, because the smaller model produces more structural violations for the validator to catch. The larger model is more natively compliant, leaving its residual volatility concentrated in failure modes that no schema validator can address. Retries also consume 30--40\% additional tokens, further eroding the value proposition of structural guardrails. The remaining volatility in both models is dominated by a \emph{canonicalization gap}: semantically equivalent strings (e.g., \texttt{"Arauca"} vs.\ \texttt{"Arauca Department, Colombia"}) that validators cannot collapse but that downstream consumers treat as distinct. Production IE pipelines that require robust consistency cannot rely on schema enforcement alone; semantic grounding must be treated as a first-class component of the reliability architecture.
 
 % ─── Contributions list (kept separate, follows the 4-paragraph arc) ───
 The core contributions of this paper are:
 \begin{enumerate}
   \item A reproducible multi-source geopolitical risk IE pipeline with session-level input caching and SQLite-backed provenance logging, enabling controlled stability evaluation.
   \item A quantitative comparison of constrained vs.\ unconstrained generation across two model scales, using Row Jaccard Similarity with bootstrap confidence intervals.
-  \item Empirical evidence of a \emph{capacity-consistency tradeoff}: smaller models are more stable than larger ones at high temperature in structured IE settings.
-  \item Identification of the \emph{canonicalization gap}---the class of semantic volatility that purely structural constraints cannot address---with concrete engineering directions.
+  \item Empirical evidence that the \emph{benefit of structural enforcement scales inversely with model size}: smaller models gain roughly $1.9\times$ more from schema validation than larger, more natively compliant ones.
+  \item Identification of the \emph{canonicalization gap}---the class of semantic volatility that purely structural constraints cannot address, persistent across model scales---with concrete engineering directions.
 \end{enumerate}
-
 % ─── Roadmap ───
 The remainder of the paper is organized as follows. Section~\ref{sec:related} reviews related work on LLM hallucination, constrained decoding, and IE pipelines. Section~\ref{sec:architecture} describes the pipeline architecture and data sources. Section~\ref{sec:design} details the experimental design, metrics, and statistical methodology. Section~\ref{sec:results} presents stability results and cost analysis. Section~\ref{sec:error} provides an error taxonomy. Section~\ref{sec:discussion} discusses implications and limitations. Section~\ref{sec:conclusion} concludes.
 
@@ -252,7 +252,7 @@ For a country with $n$ runs, the Row Jaccard Similarity is computed for all $\bi
 
 \paragraph{Excluded scalar fields.} The \texttt{risk\_level} field is excluded from the metric because it is passed through from the State Department advisory and the prompt instructs the model to echo it unchanged. Its variance does not reflect the kind of categorical structural volatility this experiment is designed to measure.
 
-\paragraph{Excluded free-text fields.} The \texttt{advisory\_summary}, \texttt{entry\_exit\_\allowbreak requirements}, \texttt{news\_headlines}, and other prose fields are excluded because exact string equality is an inappropriate standard for free text. These fields are analyzed via secondary metrics (cosine similarity of sentence embeddings) rather than Jaccard.
+\paragraph{Excluded free-text fields.} The \texttt{advisory\_summary}, \texttt{entry\_exit\_requirements}, \texttt{news\_\allowbreak headlines}, and other prose fields are excluded because exact string equality is an inappropriate standard for free text. These fields are analyzed via secondary metrics (cosine similarity of sentence embeddings) rather than Jaccard.
 
 \subsection{Statistical Analysis}
 
@@ -266,6 +266,7 @@ where $\bar{J}$ denotes the mean Row Jaccard Similarity across all countries. A 
 
 %% ─────────────────────────────────────────────────────────────────────────────
 \section{Evaluation Results}
+\label{sec:results}
 %% ─────────────────────────────────────────────────────────────────────────────
 
 \subsection{Primary Stability Results}
@@ -283,8 +284,8 @@ Table~\ref{tab:results} summarizes the core Row Jaccard Similarity results acros
 \multirow{2}{*}{llama-3.1-\allowbreak 8b}   & Unconstrained & 0.6016 & [0.579, 0.623] & \multirow{2}{*}{+11.9\%} \\
                                  & Constrained   & 0.6488 & [0.623, 0.673] & \\
 \addlinespace
-\multirow{2}{*}{gpt-oss-\allowbreak 120b} & Unconstrained & 0.4763 & [0.303, 0.624] & \multirow{2}{*}{+4.8\%} \\
-                                 & Constrained   & 0.5016 & [0.329, 0.641] & \\
+\multirow{2}{*}{gpt-oss-\allowbreak 120b} & Unconstrained & 0.7007 & [0.673, 0.728] & \multirow{2}{*}{+6.3\%} \\
+                                 & Constrained   & 0.7197 & [0.702, 0.739] & \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -292,19 +293,19 @@ Table~\ref{tab:results} summarizes the core Row Jaccard Similarity results acros
 \begin{figure}
 \centering
 \includegraphics[width=\columnwidth]{figures/stability_bar.png}
-\caption{Mean Row Jaccard Similarity across all four experimental cells (2 models $\times$ 2 conditions) with 95\% bootstrap confidence intervals. The SLM consistently outperforms the LLM, and constrained generation provides modest improvement only for the SLM.}
+\caption{Mean Row Jaccard Similarity across all four experimental cells (2 models $\times$ 2 conditions) with 95\% bootstrap confidence intervals. Constrained generation yields a statistically significant improvement only for the SLM; neither model approaches the 50\% volatility reduction threshold.}
 \label{fig:stability_bar}
 \end{figure}
 
-\textbf{Hypothesis rejection:} Neither model approaches the 50\% volatility reduction threshold. The best-case result (llama-3.1-\allowbreak 8b constrained) achieves only 11.9\% improvement. The hypothesis is robustly rejected.
+\textbf{Hypothesis rejection:} Neither model approaches the 50\% volatility reduction threshold. The best-case result (llama-3.1-\allowbreak 8b constrained) achieves only 11.9\% improvement; the LLM achieves 6.3\%. The hypothesis is robustly rejected. The remainder of this section unpacks why---and Section~\ref{sec:error} traces the residual volatility to a single dominant cause that schema validation cannot address.
 
 \textbf{llama-3.1-\allowbreak 8b (SLM):} The constrained condition produces a statistically significant improvement. The BCIs are non-overlapping: [0.579, 0.623] for unconstrained vs.\ [0.623, 0.673] for constrained. The 11.9\% gain indicates that retry loops \emph{do} provide measurable benefit at this model scale.
 
-\textbf{gpt-oss-\allowbreak 120b (LLM):} The constrained condition produces no statistically significant improvement. The BCIs overlap massively---[0.303, 0.624] vs.\ [0.329, 0.641]---indicating that the 4.8\% mean difference is well within sampling noise. Schema constraints provide no reliable benefit to the 120B model in this setting.
+\textbf{gpt-oss-\allowbreak 120b (LLM):} The constrained condition produces no statistically significant improvement. The BCIs overlap---[0.673, 0.728] vs.\ [0.702, 0.739]---indicating that the 6.3\% mean difference falls within sampling noise. Schema constraints provide no reliable benefit to the 120B model in this setting, despite its higher absolute stability in both conditions.
 
-\subsection{Cross-Model Comparison: SLM Outperforms LLM}
+\subsection{Cross-Model Comparison}
 
-The most counterintuitive finding is the consistent stability advantage of the smaller SLM over the larger LLM. Across all tested conditions, llama-3.1-\allowbreak 8b achieves higher Row Jaccard Stability than gpt-oss-\allowbreak 120b (Table~\ref{tab:crossmodel}).
+Table~\ref{tab:crossmodel} compares stability across model scales. In both conditions, the larger gpt-oss-\allowbreak 120b achieves higher Row Jaccard Stability than llama-3.1-\allowbreak 8b.
 
 \begin{table}[h]
 \caption{Cross-model stability comparison across all conditions.}
@@ -314,22 +315,20 @@ The most counterintuitive finding is the consistent stability advantage of the s
 \toprule
 \textbf{Condition} & \textbf{llama-3.1-\allowbreak 8b} & \textbf{gpt-oss-\allowbreak 120b} \\
 \midrule
-Unconstrained & 0.6016 & 0.4763 \\
-Constrained   & 0.6488 & 0.5016 \\
+Unconstrained & 0.6016 & 0.7007 \\
+Constrained   & 0.6488 & 0.7197 \\
 \midrule
-\textbf{SLM advantage (unconstrained)} & \multicolumn{2}{c}{+26.3\%} \\
-\textbf{SLM advantage (constrained)}   & \multicolumn{2}{c}{+29.3\%} \\
+\textbf{LLM advantage (unconstrained)} & \multicolumn{2}{c}{+16.5\%} \\
+\textbf{LLM advantage (constrained)}   & \multicolumn{2}{c}{+10.9\%} \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-The SLM's stability advantage is not a marginal effect: it represents a 26--29\% absolute improvement over the LLM in mean Jaccard Similarity. This finding contradicts the intuition that larger models, being generally more capable, would produce more consistent structured outputs.
+The 120B model is more stable than the 8B model by 16.5\% unconstrained and 10.9\% constrained. This is the expected direction: larger, more capable models produce more consistent structured outputs at high temperature, consistent with their generally tighter calibration on instruction-following tasks.
 
-We hypothesize that this inversion arises from a \textbf{capacity--consistency tradeoff}: the 120B model's vast expressive capacity enables it to generate semantically richer and more contextually nuanced outputs, but this same capacity produces a flatter, wider output distribution that resists stabilization. The 8B model operates with a narrower effective hypothesis space, making its categorical choices more \emph{predictable} even at high temperatures.
+The more informative observation is that the LLM's advantage \emph{shrinks} under constraints (16.5\% $\to$ 10.9\%). The SLM closes part of the gap because it has more structural violations for the validator to catch and correct---an asymmetry quantified directly in Section~\ref{sec:results}'s constraint benefit analysis and traced to specific failure modes in Section~\ref{sec:error}. The residual gap that constraints cannot close reflects the canonicalization volatility that affects both models and that schema validation is architecturally unable to address.
 
-This is consistent with recent work by Yuan et al.\ \cite{yuan2025numerical}, who demonstrate that large models distributed across multiple GPUs introduce more floating-point nondeterminism than smaller models that fit on a single device, and with observations by Song et al.\ \cite{song2024good} that larger models do not consistently outperform smaller ones on stability-sensitive evaluation tasks.
-
-\subsection{Constraint Benefit Scales with Model Size (Inversely)}
+\subsection{Constraint Benefit Scales Inversely with Model Size}
 
 A related finding is the differential benefit from constraints across model scales. Table~\ref{tab:benefit} quantifies the \emph{relative benefit multiplier}---the ratio of percentage improvement in the SLM vs.\ LLM from applying constraints.
 
@@ -341,18 +340,18 @@ A related finding is the differential benefit from constraints across model scal
 \toprule
 \textbf{Model} & \textbf{Volatility Reduction} & \textbf{SLM/LLM Ratio} \\
 \midrule
-llama-3.1-\allowbreak 8b (SLM) & 11.9\% & \multirow{2}{*}{$\approx2.5\times$} \\
-gpt-oss-\allowbreak 120b (LLM) & 4.8\%  & \\
+llama-3.1-\allowbreak 8b (SLM) & 11.9\% & \multirow{2}{*}{$\approx1.9\times$} \\
+gpt-oss-\allowbreak 120b (LLM) & 6.3\%  & \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-The SLM benefits roughly $2.5\times$ more from schema constraints than the LLM. We interpret this through the mechanism of the retry loop: the 8B model more frequently generates structurally deviant outputs (wrong categories, missing fields), giving the validator more opportunities to intervene and correct. The 120B model already generates schema-compliant structures at a high native rate; thus, the retry loop has fewer purely structural violations to fix. The residual instability in the LLM is driven by \emph{semantic} variance---which structural validation cannot address.
+The SLM benefits roughly $1.9\times$ more from schema constraints than the LLM. We interpret this through the mechanism of the retry loop: the 8B model more frequently generates structurally deviant outputs (wrong categories, missing fields), giving the validator more opportunities to intervene and correct. The 120B model already generates schema-compliant structures at a high native rate; thus, the retry loop has fewer purely structural violations to fix. The residual instability in the LLM is driven by \emph{semantic} variance---specifically the canonicalization failures characterized in Section~\ref{sec:error}---which structural validation cannot address.
 
 \subsection{Cost Analysis}
 \label{sec:cost}
 
-Table~\ref{tab:cost} summarizes the token overhead introduced by the constrained condition due to retry attempts. We measure both the mean number of retry invocations per country and the estimated token overhead relative to a single unconstrained generation.
+Table~\ref{tab:cost} summarizes the token overhead introduced by the constrained condition due to retry attempts. Two quantities are reported: the mean number of retry invocations per country and the estimated token overhead relative to a single unconstrained generation.
 
 \begin{table}[h]
 \caption{Retry overhead in constrained condition (per country, mean across runs).}
@@ -363,7 +362,7 @@ Table~\ref{tab:cost} summarizes the token overhead introduced by the constrained
 \textbf{Model} & \textbf{Avg. Retries} & \textbf{Token Overhead} & \textbf{Stability Gain} \\
 \midrule
 llama-3.1-\allowbreak 8b   & 1.3$\times$ & +30--40\%   & +11.9\% \\
-gpt-oss-\allowbreak 120b   & 0.4$\times$ & +10--15\%   & +4.8\%  \\
+gpt-oss-\allowbreak 120b   & 0.4$\times$ & +10--15\%   & +6.3\%  \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -433,20 +432,6 @@ A human reader recognizes all three variants in each group as references to the 
 
 Type 3 failures dominate the residual volatility in both models' outputs and are the primary reason the 50\% hypothesis was rejected. No amount of structural validation reduces them.
 
-\subsection{Bimodal Stability in the LLM}
-
-A striking characteristic of the gpt-oss-\allowbreak 120b results is the width of its 95\% bootstrap confidence interval: [0.30, 0.62] unconstrained and [0.33, 0.64] constrained. This 0.32-unit spread is itself a diagnostic finding. The LLM is not uniformly unstable. It exhibits \emph{bimodal} stability behavior: near-identical outputs on some countries, radically divergent outputs on others.
-
-\begin{figure}[h]
-\centering
-\includegraphics[width=\columnwidth]{figures/gpt_per_country.png}
-\caption{Per-country mean Row Jaccard Similarity for gpt-oss-\allowbreak 120b (unconstrained vs.\ constrained). The spread from near-zero to near-perfect stability reveals input-dependent bimodality that structural constraints do not smooth.}
-\label{fig:gpt_percountry}
-\end{figure}
-
-Figure~\ref{fig:gpt_percountry} visualizes this dispersion. Countries with well-documented, unambiguous risk profiles cluster at the high-stability end---both low-risk countries with short advisories (NZL, NOR) and high-risk countries with clear, narrow advisories (PRK, SYR). Countries with complex, multi-faceted risk landscapes (CHN, MEX, IND) fall at the low-stability end, where the LLM diverges substantially between runs.
-
-The pattern suggests that the LLM's output distribution is highly sensitive to the semantic complexity of the input. Simple inputs produce tight, reproducible output distributions; complex inputs produce flat, high-entropy distributions that no amount of structural validation can narrow. This is precisely the capacity-consistency tradeoff identified in Section~\ref{sec:results}, visible at the per-country level. The SLM does not exhibit the same bimodality because its narrower output distribution produces more uniform behavior across input complexity levels.
 %% ─────────────────────────────────────────────────────────────────────────────
 \section{Discussion}
 \label{sec:discussion}
@@ -455,7 +440,9 @@ The pattern suggests that the LLM's output distribution is highly sensitive to t
 
 The 50\% hypothesis was motivated by the intuition that a tight structural feedback loop would dramatically narrow the model's effective output space. This intuition was partially correct but fundamentally incomplete. Schema constraints do narrow the \emph{structural} output space: they eliminate Type 1 failures reliably and catch the malformed JSON that would otherwise break downstream systems. What they cannot narrow is the \emph{semantic} output space---the variance in how the model reads, interprets, and synthesizes input text into categorical and free-form outputs. At $T{=}1.0$, semantic variance dominates. Structural validators are blind to it by design.
 
-The finding is consistent with Tam et al.\ \cite{tam2024let}, who argue that the fundamental bottleneck in structured IE is semantic alignment rather than syntactic compliance. Liu et al.\ \cite{liu2024we} similarly distinguish between ``low-level'' constraints (format, structure) and ``high-level'' constraints (semantics, style), noting that practitioners overwhelmingly need both but existing tooling predominantly addresses the former. The results in this paper give that distinction a concrete empirical magnitude: on a realistic IE task, the high-level gap is roughly $4\times$ larger than the low-level gap that schema validation can close.
+The dominant residual is the canonicalization gap characterized in Section~\ref{sec:error}. Free-form fields such as \texttt{regional\_warnings} accumulate surface-form variation across runs (\texttt{"Arauca"} vs.\ \texttt{"Arauca Department, Colombia"}) that a JSON schema cannot collapse and a Jaccard-style consumer cannot ignore. This single failure mode explains why the constraint benefit is bounded for both models: once Type 1 violations are removed, what remains is a class of semantic volatility that no purely structural mechanism can address. The 120B model's higher absolute stability narrows the structural component proportionally more on its own---which is precisely why constraints add less marginal value to it (Section~\ref{sec:results})---but does not close the canonicalization gap, leaving its constrained-vs-unconstrained delta inside sampling noise.
+
+The finding is consistent with Tam et al.\ \cite{tam2024let}, who argue that the fundamental bottleneck in structured IE is semantic alignment rather than syntactic compliance. Liu et al.\ \cite{liu2024we} similarly distinguish between ``low-level'' constraints (format, structure) and ``high-level'' constraints (semantics, style), noting that practitioners overwhelmingly need both but existing tooling predominantly addresses the former. The results in this paper give that distinction a concrete empirical magnitude: on a realistic IE task, even the model with stronger native structural compliance leaves the high-level gap essentially untouched, and the smaller model's gains from structural enforcement plateau well below the 50\% threshold.
 
 \subsection{Implications for Production IE Pipelines}
 
@@ -465,12 +452,12 @@ The results translate into four concrete recommendations for teams building prod
 They should remain in production pipelines as a sanity check that eliminates Type 1 structural failures. They should not be relied on as the primary mechanism for achieving output consistency.
 \textbf{What to do next:} Keep the schema validator. Add a separate stability monitor that compares outputs across independent runs for a subset of inputs, so drift in semantic consistency is detectable even when structural validation continues to pass.
 
-\paragraph{Model selection matters more than constraint architecture.}
-The SLM-vs-LLM stability gap (26--29\%) is larger than the constrained-vs-unconstrained gap within either model (at most 11.9\%). For stability-critical pipelines, a smaller, more predictable model may be preferable to a larger, more expressive one---and is also substantially cheaper to operate.
-\textbf{What to do next:} Before investing engineering effort in retry loops, benchmark candidate models on cross-run consistency for the target schema. The choice of model is likely to have higher leverage than the choice of enforcement strategy.
+\paragraph{Model selection is a stability lever, not just a capability lever.}
+The cross-model gap (10.9--16.5\% in favor of the larger model) is comparable in magnitude to the constraint effect within either model (at most 11.9\%). For stability-critical pipelines, the choice of model has leverage on the same order as the choice of enforcement strategy---and the two effects partially substitute for each other, since constraints close more of the gap for smaller models than for larger ones.
+\textbf{What to do next:} Before investing engineering effort in retry loops, benchmark candidate models on cross-run consistency for the target schema. Treat stability as a model-selection criterion alongside accuracy and cost, not as a property to be retrofitted via post-generation guardrails.
 
 \paragraph{Canonicalization is a first-class engineering concern.}
-Residual semantic volatility in free-form fields (e.g., \texttt{regional\_warnings}) is driven by surface-form variation rather than by structural failure. No schema validator can address this.
+Residual semantic volatility in free-form fields (e.g., \texttt{regional\_warnings}) is driven by surface-form variation rather than by structural failure. No schema validator can address this, and the gap persists even in the more stable larger model.
 \textbf{What to do next:} Add a post-generation entity normalization layer. For geographic terms, a named entity linker backed by a canonical gazetteer (GeoNames, Wikidata) collapses surface variants into stable identifiers. For domain-specific entities, a fuzzy string matcher against a controlled vocabulary is a lighter-weight alternative.
 
 \paragraph{Temperature settings require calibration, not defaults.}
@@ -496,11 +483,11 @@ This paper evaluated whether schema validation with error-feedback retry---the d
 Three findings define the contribution:
 
 \begin{enumerate}
- \item \textbf{Schema constraints deliver modest stability, not dominant stability.} The 50\% volatility reduction hypothesis was robustly rejected. Constraints produced at most an 11.9\% improvement for the SLM and no statistically significant improvement for the LLM.
+ \item \textbf{Schema constraints deliver modest stability, not dominant stability.} The 50\% volatility reduction hypothesis was robustly rejected at both model scales. Constraints produced an 11.9\% improvement for the SLM (statistically significant) and 6.3\% for the LLM (not statistically significant).
 
- \item \textbf{Smaller models are more stable than larger ones at high temperature.} The 8B SLM was 26--29\% more consistent across runs than the 120B LLM in every tested condition---a capacity-consistency tradeoff with direct consequences for model selection in production IE pipelines.
+ \item \textbf{Constraint benefit is inversely related to model scale.} The smaller 8B SLM benefits roughly $1.9\times$ more from schema enforcement than the 120B LLM, because the SLM produces more structural violations for the validator to catch. The larger model is more natively compliant, leaving its residual volatility concentrated in failure modes that structural validation cannot address.
 
- \item \textbf{The canonicalization gap is the dominant residual.} Semantically equivalent surface forms in free-form fields (\texttt{"Arauca"} vs.\ \texttt{"Arauca Department, Colombia"}) account for most of the volatility that remains after schema enforcement. Structural validators are architecturally incapable of closing this gap.
+ \item \textbf{The canonicalization gap is the dominant residual.} Semantically equivalent surface forms in free-form fields (\texttt{"Arauca"} vs.\ \texttt{"Arauca Department, Colombia"}) account for most of the volatility that remains after schema enforcement, and they persist at both model scales. Structural validators are architecturally incapable of closing this gap.
 \end{enumerate}
 
 The practical implication is narrow and concrete. Schema validation belongs in production IE pipelines as a structural safety net, but teams that require genuine output consistency must invest in semantic grounding---entity linking, canonicalization layers, controlled vocabularies---as a first-class component of their reliability architecture, not as an optional refinement.
